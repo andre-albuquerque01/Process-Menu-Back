@@ -4,14 +4,13 @@ import java.util.Collection;
 import java.util.List;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 
 @Document(collection = "User")
@@ -23,11 +22,14 @@ public class User implements UserDetails {
 	@Email(message = "Email should be valid")
 	private String email;
 
+	@NotNull
 	private String password;
 
-	@Min(value = 18, message = "Age should not be less than 18")
-	@Max(value = 150, message = "Age should not be greater than 150")
-	private String age;
+	@NotNull(message = "CPF can't be null")
+	private String cpf;
+
+	@NotNull(message = "Birthday cannot be null")
+	private String birthday;
 
 	@NotNull(message = "First name cannot be null")
 	private String firstName;
@@ -43,20 +45,10 @@ public class User implements UserDetails {
 
 	private UserRole role;
 
-	@NotNull(message = "Cep cannot be null")
-	private String cep;
+	@DBRef(lazy = true)
+	private AddressUser addressUser;
 
-	@NotNull(message = "Logradouro cannot be null")
-	private String logradouro;
-
-	@NotNull(message = "Bairoo cannot be null")
-	private String bairro;
-
-	@NotNull(message = "UF cannot be null")
-	private String uf;
-
-	@NotNull(message = "Complemento cannot be null")
-	private String complemento;
+	private Boolean ativo;
 
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -68,36 +60,40 @@ public class User implements UserDetails {
 			return List.of(new SimpleGrantedAuthority("ROLE_USER"), new SimpleGrantedAuthority("ROLE_FUNCIONARIO"));
 		else
 			return List.of(new SimpleGrantedAuthority("ROLE_USER"));
-
 	}
 
-	public User() {
-	}
-
-	public User(String email, String password, String age, String firstName, String lastName,
-			String phoneNumber, String DDD, UserRole role, String cep, String logradouro, String bairro, String uf,
-			String complemento) {
+	public User(String email, String password, String cpf, String birthday, String firstName, String lastName,
+			String phoneNumber, String DDD, UserRole role, 
+			AddressUser addressUser, Boolean ativo) {
 		this.email = email;
 		this.password = password;
-		this.age = age;
+		this.birthday = birthday;
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.phoneNumber = phoneNumber;
-		this.DDD = DDD;
+		DDD = DDD;
 		this.role = role;
-		this.cep = cep;
-		this.logradouro = logradouro;
-		this.bairro = bairro;
-		this.uf = uf;
-		this.complemento = complemento;
+		this.addressUser = addressUser;
+		this.ativo = ativo;
+	}
+
+	public User() {
+
 	}
 
 	@Override
 	public String toString() {
-		return "User [id=" + id + ", email=" + email + ", password=" + password + ", age=" + age + ", firstName="
-				+ firstName + ", lastName=" + lastName + ", phoneNumber=" + phoneNumber + ", DDD=" + DDD + ", role="
-				+ role + ", cep=" + cep + ", logradouro=" + logradouro + ", bairro=" + bairro + ", uf=" + uf
-				+ ", complemento=" + complemento + "]";
+		return "User [id=" + id + ", email=" + email + ", password=" + password + ", cpf=" + cpf + ", birthday="
+				+ birthday + ", firstName=" + firstName + ", lastName=" + lastName + ", phoneNumber=" + phoneNumber
+				+ ", DDD=" + DDD + ", role=" + role + ", addressUser=" + addressUser + ", ativo=" + ativo + "]";
+	}
+
+	public AddressUser getAddressUser() {
+		return addressUser;
+	}
+
+	public void setAddressUser(AddressUser addressUser) {
+		this.addressUser = addressUser;
 	}
 
 	public String getId() {
@@ -116,24 +112,32 @@ public class User implements UserDetails {
 		this.email = email;
 	}
 
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
+	public String getCpf() {
+		return cpf;
+	}
+
+	public void setCpf(String cpf) {
+		this.cpf = cpf;
+	}
+
+	public String getBirthday() {
+		return birthday;
+	}
+
+	public void setBirthday(String birthday) {
+		this.birthday = birthday;
+	}
+
 	public UserRole getRole() {
 		return role;
 	}
 
 	public void setRole(UserRole role) {
 		this.role = role;
-	}
-
-	public void setPassword(String password) {
-		this.password = password;
-	}
-
-	public String getAge() {
-		return age;
-	}
-
-	public void setAge(String age) {
-		this.age = age;
 	}
 
 	public String getFirstName() {
@@ -168,50 +172,18 @@ public class User implements UserDetails {
 		DDD = dDD;
 	}
 
-	public String getCep() {
-		return cep;
+	public Boolean getAtivo() {
+		return ativo;
 	}
 
-	public void setCep(String cep) {
-		this.cep = cep;
-	}
-
-	public String getLogradouro() {
-		return logradouro;
-	}
-
-	public void setLogradouro(String logradouro) {
-		this.logradouro = logradouro;
-	}
-
-	public String getBairro() {
-		return bairro;
-	}
-
-	public void setBairro(String bairro) {
-		this.bairro = bairro;
-	}
-
-	public String getUf() {
-		return uf;
-	}
-
-	public void setUf(String uf) {
-		this.uf = uf;
-	}
-
-	public String getComplemento() {
-		return complemento;
-	}
-
-	public void setComplemento(String complemento) {
-		this.complemento = complemento;
+	public void setAtivo(Boolean ativo) {
+		this.ativo = ativo;
 	}
 
 	@Override
 	public String getPassword() {
 		// TODO Auto-generated method stub
-		return null;
+		return password;
 	}
 
 	@Override
