@@ -69,9 +69,21 @@ public class ProductController {
 		}
 	}
 
-	@PutMapping("/like/{id}")
-	public ResponseEntity<Product> createLike(@PathVariable(value = "id") String id,
-			@Valid @RequestParam String like) {
+	@PostMapping("/register")
+	public ResponseEntity<Product> createProduct(@RequestBody @Valid ProductResponseDTO data) {
+		try {
+			Product _product = new Product(data.title(), data.description(), data.qtd_itens(), data.observation(),
+					data.preco(), data.tempo_espera(), data.status(), data.file_name(), data.categoria());
+			Product savedProduct = this.productRepository.save(_product);
+			return ResponseEntity.ok(savedProduct);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+	@PatchMapping("/like/{id}")
+	public ResponseEntity<Product> createLike(@PathVariable(value = "id") String id, @Valid @RequestParam String like) {
 		try {
 			Optional<Product> productData = productRepository.findById(id);
 			if (productData.isPresent()) {
@@ -87,20 +99,7 @@ public class ProductController {
 		}
 	}
 
-	@PostMapping("/register")
-	public ResponseEntity<Product> createProduct(@RequestBody @Valid ProductResponseDTO data) {
-		try {
-			Product _product = new Product(data.title(), data.description(), data.qtd_itens(), data.observation(),
-					data.preco(), data.tempo_espera(), data.status(), data.file_name(), data.categoria());
-			Product savedProduct = this.productRepository.save(_product);
-			return ResponseEntity.ok(savedProduct);
-		} catch (Exception e) {
-			e.printStackTrace();
-			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-		}
-	}
-
-	@PatchMapping("/alt/{id}")
+	@PutMapping("/alt/{id}")
 	public ResponseEntity<Product> updateProduct(@PathVariable(value = "id") String id,
 			@Valid @RequestBody Product data) {
 		try {

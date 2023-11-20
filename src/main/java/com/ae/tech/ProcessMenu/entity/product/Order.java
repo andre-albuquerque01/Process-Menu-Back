@@ -1,5 +1,7 @@
 package com.ae.tech.ProcessMenu.entity.product;
 
+import java.util.List;
+
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -8,7 +10,7 @@ public class Order {
 	@Id
 	private String id;
 
-	private OrderProducts products;
+	private List<OrderProducts> products;
 
 	private String numberOrder;
 
@@ -22,7 +24,7 @@ public class Order {
 
 	private double precoTotal;
 
-	private boolean status;
+	private String status;
 
 	private double impostoTributos;
 
@@ -31,8 +33,8 @@ public class Order {
 	public Order() {
 	}
 
-	public Order(OrderProducts products, String numberOrder, String idUser, String formPay, String qtdItens,
-			String table, double precoTotal, boolean status, double impostoTributos, String nfe) {
+	public Order(List<OrderProducts> products, String numberOrder, String idUser, String formPay, String qtdItens,
+			String table, double precoTotal, String status, double impostoTributos, String nfe) {
 		this.products = products;
 		this.numberOrder = numberOrder;
 		this.idUser = idUser;
@@ -53,11 +55,11 @@ public class Order {
 		this.id = id;
 	}
 
-	public OrderProducts getProducts() {
+	public List<OrderProducts> getProducts() {
 		return products;
 	}
 
-	public void setProducts(OrderProducts products) {
+	public void setProducts(List<OrderProducts> products) {
 		this.products = products;
 	}
 
@@ -109,11 +111,11 @@ public class Order {
 		this.precoTotal = precoTotal;
 	}
 
-	public boolean isStatus() {
+	public String getStatus() {
 		return status;
 	}
 
-	public void setStatus(boolean status) {
+	public void setStatus(String status) {
 		this.status = status;
 	}
 
