@@ -1,7 +1,5 @@
 package com.ae.tech.ProcessMenu.entity.product;
 
-import java.util.List;
-
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -10,7 +8,9 @@ public class Order {
 	@Id
 	private String id;
 
-	private List<Product> procuct;
+	private OrderProducts products;
+
+	private String numberOrder;
 
 	private String idUser;
 
@@ -31,9 +31,10 @@ public class Order {
 	public Order() {
 	}
 
-	public Order(List<Product> procuct, String idUser, String formPay, String qtdItens, String table, double precoTotal,
-			boolean status, double impostoTributos, String nfe) {
-		this.procuct = procuct;
+	public Order(OrderProducts products, String numberOrder, String idUser, String formPay, String qtdItens,
+			String table, double precoTotal, boolean status, double impostoTributos, String nfe) {
+		this.products = products;
+		this.numberOrder = numberOrder;
 		this.idUser = idUser;
 		this.formPay = formPay;
 		this.qtdItens = qtdItens;
@@ -52,12 +53,20 @@ public class Order {
 		this.id = id;
 	}
 
-	public List<Product> getProcuct() {
-		return procuct;
+	public OrderProducts getProducts() {
+		return products;
 	}
 
-	public void setProcuct(List<Product> procuct) {
-		this.procuct = procuct;
+	public void setProducts(OrderProducts products) {
+		this.products = products;
+	}
+
+	public String getNumberOrder() {
+		return numberOrder;
+	}
+
+	public void setNumberOrder(String numberOrder) {
+		this.numberOrder = numberOrder;
 	}
 
 	public String getIdUser() {
@@ -126,9 +135,9 @@ public class Order {
 
 	@Override
 	public String toString() {
-		return "Order [id=" + id + ", procuct=" + procuct + ", idUser=" + idUser + ", formPay=" + formPay
-				+ ", qtdItens=" + qtdItens + ", table=" + table + ", precoTotal=" + precoTotal + ", status=" + status
-				+ ", impostoTributos=" + impostoTributos + ", nfe=" + nfe + "]";
+		return "Order [id=" + id + ", products=" + products + ", numberOrder=" + numberOrder + ", idUser=" + idUser
+				+ ", formPay=" + formPay + ", qtdItens=" + qtdItens + ", table=" + table + ", precoTotal=" + precoTotal
+				+ ", status=" + status + ", impostoTributos=" + impostoTributos + ", nfe=" + nfe + "]";
 	}
 
 }

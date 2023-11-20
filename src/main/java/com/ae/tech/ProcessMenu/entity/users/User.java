@@ -71,7 +71,7 @@ public class User implements UserDetails {
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.phoneNumber = phoneNumber;
-		DDD = DDD;
+		this.DDD = DDD;
 		this.role = role;
 		this.addressUser = addressUser;
 		this.ativo = ativo;

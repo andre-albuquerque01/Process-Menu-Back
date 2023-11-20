@@ -27,10 +27,23 @@ public class SecurytiConfiguration {
 				.authorizeHttpRequests(authorize -> authorize
 						.requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
 						.requestMatchers(HttpMethod.POST, "/auth/register").permitAll()
-//                        .requestMatchers(HttpMethod.POST, "/product").permitAll()
+						.requestMatchers(HttpMethod.PUT, "/auth/users/{id}").authenticated()
+						
 						.requestMatchers(HttpMethod.GET, "/product/").permitAll()
-						.requestMatchers(HttpMethod.POST, "/product").hasRole("ADMIN")
-						.requestMatchers(HttpMethod.PUT, "/users/{id}").authenticated().anyRequest().authenticated())
+						.requestMatchers(HttpMethod.GET, "/product/searchProduct/{name}").permitAll()
+						.requestMatchers(HttpMethod.GET, "/product/searchCategory/{category}").permitAll()
+						.requestMatchers(HttpMethod.POST, "/product/register").hasRole("ADMIN")
+						.requestMatchers(HttpMethod.PATCH, "/product/alt/{id}").hasRole("ADMIN")
+						.requestMatchers(HttpMethod.DELETE, "/product/del/{id}").hasRole("ADMIN")
+						.requestMatchers(HttpMethod.PUT, "/product/like/{id}").authenticated()
+						
+						.requestMatchers(HttpMethod.GET, "/order/").hasRole("USER")
+						.requestMatchers(HttpMethod.GET, "/order/searchOrder/{number}").hasRole("USER")
+						.requestMatchers(HttpMethod.POST, "/order/insert").hasRole("USER")
+						.requestMatchers(HttpMethod.PATCH, "/order/alt/{id}").hasRole("USER")
+						.requestMatchers(HttpMethod.DELETE, "/order/del/{id}").hasRole("USER")
+						
+						.anyRequest().authenticated())
 				.addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class).build();
 
 	}

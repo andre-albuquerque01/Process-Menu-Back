@@ -1,5 +1,6 @@
 package com.ae.tech.ProcessMenu.controller;
 
+import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -28,9 +29,24 @@ public class OrderController {
 
 	@Autowired
 	private OrderRepository orderRepository;
-	
+
+	private static final String CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+	private static final SecureRandom RANDOM = new SecureRandom();
+
+	public static String generateRandomAlphaNumeric(int length) {
+		StringBuilder sb = new StringBuilder(length);
+
+		for (int i = 0; i < length; i++) {
+			int randomIndex = RANDOM.nextInt(CHARACTERS.length());
+			char randomChar = CHARACTERS.charAt(randomIndex);
+			sb.append(randomChar);
+		}
+
+		return sb.toString();
+	}
+
 	@GetMapping("/")
-	public ResponseEntity<List<Order>> getAllOrder(){
+	public ResponseEntity<List<Order>> getAllOrder() {
 		try {
 			List<Order> list = new ArrayList<Order>();
 			if (!list.isEmpty()) {
@@ -45,11 +61,25 @@ public class OrderController {
 		}
 	}
 
+	@GetMapping("/searchOrder/{number}")
+	public ResponseEntity<List<Order>> getBySearchOrder(@PathVariable(value = "number") String number) {
+		List<Order> orders = orderRepository.findByNumberOrder(number);
+		if (!orders.isEmpty()) {
+			return new ResponseEntity<>(orders, HttpStatus.OK);
+		} else {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
+	}
+
 	@PostMapping("/insert")
 	public ResponseEntity<Order> createOrder(@RequestBody @Valid OrderResponseDTO data) {
 		try {
-			Order _order = new Order(data.procuct(), data.idUser(), data.formPay(), data.qtdItens(), data.table(),
-					data.precoTotal(), data.status(), data.impostoTributos(), data.nfe());
+			String numberOrder = generateRandomAlphaNumeric(10);
+			if(orderRepository.findByNumberOrder(numberOrder) != null)
+				return ResponseEntity.badRequest().build();
+			
+			Order _order = new Order(data.product(), numberOrder, data.idUser(), data.formPay(), data.qtdItens(),
+					data.table(), data.precoTotal(), data.status(), data.impostoTributos(), data.nfe());
 			Order saveorder = this.orderRepository.save(_order);
 			return ResponseEntity.ok(saveorder);
 		} catch (Exception e) {
@@ -63,7 +93,7 @@ public class OrderController {
 		Optional<Order> orderData = orderRepository.findById(id);
 		try {
 			Order _Order = orderData.get();
-			_Order.setProcuct(data.getProcuct());
+			_Order.setProducts(data.getProducts());
 			_Order.setIdUser(data.getIdUser());
 			_Order.setFormPay(data.getFormPay());
 			_Order.setQtdItens(data.getQtdItens());

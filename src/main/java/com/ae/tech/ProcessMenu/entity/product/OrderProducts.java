@@ -1,12 +1,7 @@
 package com.ae.tech.ProcessMenu.entity.product;
 
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
+public class OrderProducts {
 
-@Document(collection = "Product")
-public class Product {
-
-	@Id
 	private String id;
 
 	private String title;
@@ -29,11 +24,12 @@ public class Product {
 
 	private String like;
 
-	public Product() {
+	public OrderProducts() {
 	}
 
-	public Product(String title, String description, int qtd_itens, String observation, double preco,
-			String tempo_espera, boolean status, String file_name, String categoria) {
+	public OrderProducts(String id, String title, String description, int qtd_itens, String observation, double preco,
+			String tempo_espera, boolean status, String file_name, String categoria, String like) {
+		this.id = id;
 		this.title = title;
 		this.description = description;
 		this.qtd_itens = qtd_itens;
@@ -43,13 +39,15 @@ public class Product {
 		this.status = status;
 		this.file_name = file_name;
 		this.categoria = categoria;
+		this.like = like;
 	}
 
 	@Override
 	public String toString() {
-		return "Product [id=" + id + ", title=" + title + ", description=" + description + ", qtd_itens=" + qtd_itens
-				+ ", observation=" + observation + ", preco=" + preco + ", tempo_espera=" + tempo_espera + ", status="
-				+ status + ", file_name=" + file_name + ", categoria=" + categoria + "]";
+		return "OrderProducts [id=" + id + ", title=" + title + ", description=" + description + ", qtd_itens="
+				+ qtd_itens + ", observation=" + observation + ", preco=" + preco + ", tempo_espera=" + tempo_espera
+				+ ", status=" + status + ", file_name=" + file_name + ", categoria=" + categoria + ", like=" + like
+				+ "]";
 	}
 
 	public String getId() {

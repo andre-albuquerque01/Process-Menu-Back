@@ -16,9 +16,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
 
 import com.ae.tech.ProcessMenu.entity.DTO.ProductResponseDTO;
 import com.ae.tech.ProcessMenu.entity.product.Product;
@@ -50,17 +49,55 @@ public class ProductController {
 		}
 	}
 
+	@GetMapping("/searchProduct/{name}")
+	public ResponseEntity<List<Product>> getNameProduct(@PathVariable(value = "name") String name) {
+		List<Product> listTitle = productRepository.findByTitle(name);
+		if (!listTitle.isEmpty()) {
+			return new ResponseEntity<>(listTitle, HttpStatus.OK);
+		} else {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
+	}
+
+	@GetMapping("/searchCategory/{category}")
+	public ResponseEntity<List<Product>> getCategory(@PathVariable(value = "category") String category) {
+		List<Product> listCategory = productRepository.findByCategoria(category);
+		if (!listCategory.isEmpty()) {
+			return new ResponseEntity<>(listCategory, HttpStatus.OK);
+		} else {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
+	}
+
+	@PutMapping("/like/{id}")
+	public ResponseEntity<Product> createLike(@PathVariable(value = "id") String id,
+			@Valid @RequestParam String like) {
+		try {
+			Optional<Product> productData = productRepository.findById(id);
+			if (productData.isPresent()) {
+				Product _Product = productData.get();
+				_Product.setLike(like);
+				return new ResponseEntity<>(productRepository.save(_Product), HttpStatus.OK);
+			} else {
+				return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+		}
+	}
+
 	@PostMapping("/register")
 	public ResponseEntity<Product> createProduct(@RequestBody @Valid ProductResponseDTO data) {
-	    try {
-	        Product _product = new Product(data.title(), data.description(), data.qtd_itens(), data.observation(),
-	                data.preco(), data.tempo_espera(), data.status(), data.file_name(), data.categoria());
-	        Product savedProduct = this.productRepository.save(_product);
-	        return ResponseEntity.ok(savedProduct);
-	    } catch (Exception e) {
-	        e.printStackTrace();
-	        return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-	    }
+		try {
+			Product _product = new Product(data.title(), data.description(), data.qtd_itens(), data.observation(),
+					data.preco(), data.tempo_espera(), data.status(), data.file_name(), data.categoria());
+			Product savedProduct = this.productRepository.save(_product);
+			return ResponseEntity.ok(savedProduct);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
 	}
 
 	@PatchMapping("/alt/{id}")
@@ -68,17 +105,21 @@ public class ProductController {
 			@Valid @RequestBody Product data) {
 		try {
 			Optional<Product> productData = productRepository.findById(id);
-			Product _Product = productData.get();
-			_Product.setTitle(data.getTitle());
-			_Product.setDescription(data.getDescription());
-			_Product.setQtd_itens(data.getQtd_itens());
-			_Product.setObservation(data.getObservation());
-			_Product.setPreco(data.getPreco());
-			_Product.setTempo_espera(data.getTempo_espera());
-			_Product.setStatus(data.isStatus());
-			_Product.setFile_name(data.getFile_name());
-			_Product.setCategoria(data.getCategoria());
-			return new ResponseEntity<>(productRepository.save(_Product), HttpStatus.OK);
+			if (productData.isPresent()) {
+				Product _Product = productData.get();
+				_Product.setTitle(data.getTitle());
+				_Product.setDescription(data.getDescription());
+				_Product.setQtd_itens(data.getQtd_itens());
+				_Product.setObservation(data.getObservation());
+				_Product.setPreco(data.getPreco());
+				_Product.setTempo_espera(data.getTempo_espera());
+				_Product.setStatus(data.isStatus());
+				_Product.setFile_name(data.getFile_name());
+				_Product.setCategoria(data.getCategoria());
+				return new ResponseEntity<>(productRepository.save(_Product), HttpStatus.OK);
+			} else {
+				return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
