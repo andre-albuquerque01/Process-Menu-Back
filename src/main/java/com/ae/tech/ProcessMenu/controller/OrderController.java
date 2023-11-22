@@ -1,6 +1,5 @@
 package com.ae.tech.ProcessMenu.controller;
 
-import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -21,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.ae.tech.ProcessMenu.entity.DTO.OrderResponseDTO;
 import com.ae.tech.ProcessMenu.entity.product.Order;
 import com.ae.tech.ProcessMenu.repositorio.OrderRepository;
+import com.ae.tech.ProcessMenu.services.OrderService;
 
 import jakarta.validation.Valid;
 
@@ -31,36 +31,37 @@ public class OrderController {
 	@Autowired
 	private OrderRepository orderRepository;
 
-	private static final String CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-	private static final SecureRandom RANDOM = new SecureRandom();
-
-	public static String generateRandomAlphaNumeric(int length) {
-		StringBuilder sb = new StringBuilder(length);
-
-		for (int i = 0; i < length; i++) {
-			int randomIndex = RANDOM.nextInt(CHARACTERS.length());
-			char randomChar = CHARACTERS.charAt(randomIndex);
-			sb.append(randomChar);
+	@GetMapping("/orders")
+	public ResponseEntity<List<Order>> getAllOrders() {
+		try {
+			List<Order> list = new ArrayList<Order>();
+			if (!list.isEmpty()) {
+				orderRepository.findAll().forEach(list::add);
+				return new ResponseEntity<>(list, HttpStatus.OK);
+			} else {
+				return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-
-		return sb.toString();
 	}
 
 	@GetMapping("/{id}")
 	public ResponseEntity<Order> getOrderById(@PathVariable(value = "id") String id) {
-	    try {
-	        Optional<Order> orderOptional = orderRepository.findById(id);
+		try {
+			Optional<Order> orderOptional = orderRepository.findById(id);
 
-	        if (orderOptional.isPresent()) {
-	            Order order = orderOptional.get();
-	            return new ResponseEntity<>(order, HttpStatus.OK);
-	        } else {
-	            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-	        }
-	    } catch (Exception e) {
-	        e.printStackTrace();
-	        return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-	    }
+			if (orderOptional.isPresent()) {
+				Order order = orderOptional.get();
+				return new ResponseEntity<>(order, HttpStatus.OK);
+			} else {
+				return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
 	}
 
 	@GetMapping("/searchOrder/{number}")
@@ -76,7 +77,7 @@ public class OrderController {
 	@PostMapping("/insert")
 	public ResponseEntity<Order> createOrder(@RequestBody @Valid OrderResponseDTO data) {
 		try {
-			var numberOrder = generateRandomAlphaNumeric(20);
+			var numberOrder = OrderService.generateRandomAlphaNumeric(20);
 			if (orderRepository.findByNumberOrder(numberOrder) == null)
 				return ResponseEntity.badRequest().build();
 

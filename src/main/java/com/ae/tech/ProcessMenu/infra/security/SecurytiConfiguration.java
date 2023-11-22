@@ -13,6 +13,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @Configuration
 @EnableWebSecurity
@@ -27,6 +28,7 @@ public class SecurytiConfiguration {
 				.authorizeHttpRequests(authorize -> authorize
 						.requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
 						.requestMatchers(HttpMethod.POST, "/auth/register").permitAll()
+						.requestMatchers(HttpMethod.POST, "/auth/logout").authenticated()
 						.requestMatchers(HttpMethod.PUT, "/auth/users/{id}").authenticated()
 						
 						.requestMatchers(HttpMethod.GET, "/product/").permitAll()
@@ -37,6 +39,7 @@ public class SecurytiConfiguration {
 						.requestMatchers(HttpMethod.DELETE, "/product/del/{id}").hasRole("ADMIN")
 						.requestMatchers(HttpMethod.PATCH, "/product/like/{id}").authenticated()
 						
+						.requestMatchers(HttpMethod.GET, "/order/orders").hasRole("FUNCIONARIOS")
 						.requestMatchers(HttpMethod.GET, "/order/{id}").hasRole("USER")
 						.requestMatchers(HttpMethod.GET, "/order/searchOrder/{number}").hasRole("USER")
 						.requestMatchers(HttpMethod.POST, "/order/insert").hasRole("USER")
@@ -44,7 +47,8 @@ public class SecurytiConfiguration {
 						.requestMatchers(HttpMethod.PATCH, "/order/updateStatus/{id}").hasRole("FUNCIONARIO")
 						.requestMatchers(HttpMethod.DELETE, "/order/del/{id}").hasRole("FUNCIONARIO")
 						
-						.anyRequest().authenticated())
+						.anyRequest().authenticated()
+						)
 				.addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class).build();
 
 	}

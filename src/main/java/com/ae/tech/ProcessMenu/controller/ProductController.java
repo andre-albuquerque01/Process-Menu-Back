@@ -18,10 +18,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.ae.tech.ProcessMenu.entity.DTO.ProductResponseDTO;
 import com.ae.tech.ProcessMenu.entity.product.Product;
 import com.ae.tech.ProcessMenu.repositorio.ProductRepository;
+import com.ae.tech.ProcessMenu.services.ImageService;
 
 import jakarta.validation.Valid;
 
@@ -32,6 +34,9 @@ public class ProductController {
 
 	@Autowired
 	private ProductRepository productRepository;
+	
+	@Autowired
+	private ImageService imageService;
 
 	@GetMapping("/")
 	public ResponseEntity<List<Product>> getAllProduct() {
@@ -70,10 +75,11 @@ public class ProductController {
 	}
 
 	@PostMapping("/register")
-	public ResponseEntity<Product> createProduct(@RequestBody @Valid ProductResponseDTO data) {
+	public ResponseEntity<Product> createProduct(@RequestParam("file_name") MultipartFile file_name, @RequestBody @Valid ProductResponseDTO data) {
 		try {
+			var saveImg = imageService.saveImageToStorage("Documentos/img/", file_name);
 			Product _product = new Product(data.title(), data.description(), data.qtd_itens(), data.observation(),
-					data.preco(), data.tempo_espera(), data.status(), data.file_name(), data.categoria());
+					data.preco(), data.tempo_espera(), data.status(), saveImg, data.categoria());
 			Product savedProduct = this.productRepository.save(_product);
 			return ResponseEntity.ok(savedProduct);
 		} catch (Exception e) {

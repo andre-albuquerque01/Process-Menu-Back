@@ -26,6 +26,7 @@ import com.ae.tech.ProcessMenu.infra.security.TokenService;
 import com.ae.tech.ProcessMenu.repositorio.AddressUserRepository;
 import com.ae.tech.ProcessMenu.repositorio.UserRepository;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 
 @CrossOrigin(origins = "*", allowedHeaders = "*")
@@ -41,10 +42,9 @@ public class AuthenticationController {
 
 	@Autowired
 	private TokenService tokenService;
-	
+
 	@Autowired
 	private AddressUserRepository addressUserRepository;
-	
 
 	@PostMapping("/login")
 	public ResponseEntity login(@RequestBody @Valid AuthenticationDTO data) {
@@ -67,9 +67,8 @@ public class AuthenticationController {
 				return ResponseEntity.badRequest().build();
 
 			String encrytedPassword = new BCryptPasswordEncoder().encode(data.password());
-			User newUser = new User(data.email(), encrytedPassword, data.cpf(), data.birthday(),
-					data.firstName(), data.lastName(),data.phoneNumber(), 
-					data.DDD(), data.role(), data.addressUser(), data.ativo());
+			User newUser = new User(data.email(), encrytedPassword, data.cpf(), data.birthday(), data.firstName(),
+					data.lastName(), data.phoneNumber(), data.DDD(), data.role(), data.addressUser(), data.ativo());
 			this.addressUserRepository.save(data.addressUser());
 			newUser.setAddressUser(data.addressUser());
 			this.userRepository.save(newUser);
@@ -128,6 +127,12 @@ public class AuthenticationController {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 		}
 
+	}
+
+	@PostMapping("/logout")
+	public ResponseEntity<?> logout(HttpServletRequest request) {
+		String token = request.getHeader("Authorization").replace("Bearer ", "");
+		return ResponseEntity.ok().build();
 	}
 
 }
