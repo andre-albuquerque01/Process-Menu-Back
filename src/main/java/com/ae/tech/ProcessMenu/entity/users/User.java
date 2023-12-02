@@ -50,6 +50,8 @@ public class User implements UserDetails {
 
 	private Boolean ativo;
 
+	private Boolean termsService;
+
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
 		// TODO Auto-generated method stub
@@ -63,8 +65,8 @@ public class User implements UserDetails {
 	}
 
 	public User(String email, String password, String cpf, String birthday, String firstName, String lastName,
-			String phoneNumber, String DDD, UserRole role, 
-			AddressUser addressUser, Boolean ativo) {
+			String phoneNumber, String DDD, UserRole role, AddressUser addressUser, Boolean ativo,
+			Boolean termsService) {
 		this.email = email;
 		this.password = password;
 		this.birthday = birthday;
@@ -75,6 +77,7 @@ public class User implements UserDetails {
 		this.role = role;
 		this.addressUser = addressUser;
 		this.ativo = ativo;
+		this.termsService = termsService;
 	}
 
 	public User() {
@@ -85,7 +88,8 @@ public class User implements UserDetails {
 	public String toString() {
 		return "User [id=" + id + ", email=" + email + ", password=" + password + ", cpf=" + cpf + ", birthday="
 				+ birthday + ", firstName=" + firstName + ", lastName=" + lastName + ", phoneNumber=" + phoneNumber
-				+ ", DDD=" + DDD + ", role=" + role + ", addressUser=" + addressUser + ", ativo=" + ativo + "]";
+				+ ", DDD=" + DDD + ", role=" + role + ", addressUser=" + addressUser + ", ativo=" + ativo
+				+ ", termsService=" + termsService + "]";
 	}
 
 	public AddressUser getAddressUser() {
@@ -178,6 +182,14 @@ public class User implements UserDetails {
 
 	public void setAtivo(Boolean ativo) {
 		this.ativo = ativo;
+	}
+
+	public Boolean getTermsService() {
+		return termsService;
+	}
+
+	public void setTermsService(Boolean termsService) {
+		this.termsService = termsService;
 	}
 
 	@Override

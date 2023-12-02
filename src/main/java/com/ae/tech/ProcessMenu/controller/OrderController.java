@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.ae.tech.ProcessMenu.entity.DTO.OrderResponseDTO;
 import com.ae.tech.ProcessMenu.entity.product.Order;
 import com.ae.tech.ProcessMenu.repositorio.OrderRepository;
-import com.ae.tech.ProcessMenu.services.OrderService;
+import com.ae.tech.ProcessMenu.services.RandomService;
 
 import jakarta.validation.Valid;
 
@@ -77,12 +77,12 @@ public class OrderController {
 	@PostMapping("/insert")
 	public ResponseEntity<Order> createOrder(@RequestBody @Valid OrderResponseDTO data) {
 		try {
-			var numberOrder = OrderService.generateRandomAlphaNumeric(20);
+			var numberOrder = RandomService.generateRandomAlphaNumeric(20);
 			if (orderRepository.findByNumberOrder(numberOrder) == null)
 				return ResponseEntity.badRequest().build();
 
 			Order _order = new Order(data.products(), "#" + numberOrder, data.idUser(), data.formPay(), data.qtdItens(),
-					data.table(), data.precoTotal(), data.status(), data.impostoTributos(), data.nfe());
+					data.table(), data.precoTotal(), data.status(), data.impostoTributos(), data.nfe(), data.dateOrder(), data.tip());
 			Order saveorder = this.orderRepository.save(_order);
 			return ResponseEntity.ok(saveorder);
 		} catch (Exception e) {
@@ -105,6 +105,8 @@ public class OrderController {
 			_Order.setStatus(data.getStatus());
 			_Order.setImpostoTributos(data.getImpostoTributos());
 			_Order.setNfe(data.getNfe());
+			_Order.setDateOrder(data.getDateOrder());
+			_Order.setTip(data.getTip());
 			return new ResponseEntity<>(orderRepository.save(_Order), HttpStatus.OK);
 		} catch (Exception e) {
 			e.printStackTrace();

@@ -5,7 +5,7 @@ import java.security.SecureRandom;
 import org.springframework.stereotype.Service;
 
 @Service
-public class OrderService {
+public class RandomService {
 	private static final String CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 	private static final SecureRandom RANDOM = new SecureRandom();
 

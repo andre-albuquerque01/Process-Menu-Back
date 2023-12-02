@@ -30,11 +30,16 @@ public class Order {
 
 	private String nfe;
 
+	private String dateOrder;
+
+	private double tip;
+
 	public Order() {
 	}
 
 	public Order(List<OrderProducts> products, String numberOrder, String idUser, String formPay, String qtdItens,
-			String table, double precoTotal, String status, double impostoTributos, String nfe) {
+			String table, double precoTotal, String status, double impostoTributos, String nfe, String dateOrder,
+			double tip) {
 		this.products = products;
 		this.numberOrder = numberOrder;
 		this.idUser = idUser;
@@ -45,6 +50,8 @@ public class Order {
 		this.status = status;
 		this.impostoTributos = impostoTributos;
 		this.nfe = nfe;
+		this.dateOrder = dateOrder;
+		this.tip = tip;
 	}
 
 	public String getId() {
@@ -135,11 +142,28 @@ public class Order {
 		this.nfe = nfe;
 	}
 
+	public String getDateOrder() {
+		return dateOrder;
+	}
+
+	public void setDateOrder(String dateOrder) {
+		this.dateOrder = dateOrder;
+	}
+
+	public double getTip() {
+		return tip;
+	}
+
+	public void setTip(double tip) {
+		this.tip = tip;
+	}
+
 	@Override
 	public String toString() {
 		return "Order [id=" + id + ", products=" + products + ", numberOrder=" + numberOrder + ", idUser=" + idUser
 				+ ", formPay=" + formPay + ", qtdItens=" + qtdItens + ", table=" + table + ", precoTotal=" + precoTotal
-				+ ", status=" + status + ", impostoTributos=" + impostoTributos + ", nfe=" + nfe + "]";
+				+ ", status=" + status + ", impostoTributos=" + impostoTributos + ", nfe=" + nfe + ", dateOrder="
+				+ dateOrder + ", tip=" + tip + "]";
 	}
 
 }

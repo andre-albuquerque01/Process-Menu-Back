@@ -28,6 +28,7 @@ public class SecurytiConfiguration {
 				.authorizeHttpRequests(authorize -> authorize
 						.requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
 						.requestMatchers(HttpMethod.POST, "/auth/register").permitAll()
+						.requestMatchers(HttpMethod.POST, "/auth/recover").permitAll()
 						.requestMatchers(HttpMethod.POST, "/auth/logout").authenticated()
 						.requestMatchers(HttpMethod.PUT, "/auth/users/{id}").authenticated()
 						
