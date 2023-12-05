@@ -29,11 +29,13 @@ public class Product {
 
 	private String like;
 
+	private String carousel;
+
 	public Product() {
 	}
 
 	public Product(String title, String description, int qtd_itens, String observation, double preco,
-			String tempo_espera, boolean status, String file_name, String categoria) {
+			String tempo_espera, boolean status, String file_name, String categoria, String carousel) {
 		this.title = title;
 		this.description = description;
 		this.qtd_itens = qtd_itens;
@@ -43,6 +45,7 @@ public class Product {
 		this.status = status;
 		this.file_name = file_name;
 		this.categoria = categoria;
+		this.carousel = carousel;
 	}
 
 	@Override
@@ -138,6 +141,14 @@ public class Product {
 
 	public void setLike(String like) {
 		this.like = like;
+	}
+
+	public String getCarousel() {
+		return carousel;
+	}
+
+	public void setCarousel(String carousel) {
+		this.carousel = carousel;
 	}
 
 }

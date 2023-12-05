@@ -79,7 +79,7 @@ public class ProductController {
 		try {
 			var saveImg = imageService.saveImageToStorage("Documentos/img/", file_name);
 			Product _product = new Product(data.title(), data.description(), data.qtd_itens(), data.observation(),
-					data.preco(), data.tempo_espera(), data.status(), saveImg, data.categoria());
+					data.preco(), data.tempo_espera(), data.status(), saveImg, data.categoria(), data.carousel());
 			Product savedProduct = this.productRepository.save(_product);
 			return ResponseEntity.ok(savedProduct);
 		} catch (Exception e) {
@@ -121,6 +121,7 @@ public class ProductController {
 				_Product.setStatus(data.isStatus());
 				_Product.setFile_name(data.getFile_name());
 				_Product.setCategoria(data.getCategoria());
+				_Product.setCarousel(data.getCarousel());
 				return new ResponseEntity<>(productRepository.save(_Product), HttpStatus.OK);
 			} else {
 				return new ResponseEntity<>(HttpStatus.NOT_FOUND);
