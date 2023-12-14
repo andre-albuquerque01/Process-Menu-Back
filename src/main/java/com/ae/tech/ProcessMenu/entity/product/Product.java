@@ -25,17 +25,20 @@ public class Product {
 
 	private String file_name;
 
-	private String categoria;
+	private String categorie;
 
 	private String like;
 
-	private String carousel;
+	private String typeProduct;
+//	Posição onde vai ficar no sistema
+	private String position;
 
 	public Product() {
 	}
 
 	public Product(String title, String description, int qtd_itens, String observation, double preco,
-			String tempo_espera, boolean status, String file_name, String categoria, String carousel) {
+			String tempo_espera, boolean status, String file_name, String categorie, String typeProduct,
+			String position) {
 		this.title = title;
 		this.description = description;
 		this.qtd_itens = qtd_itens;
@@ -44,15 +47,17 @@ public class Product {
 		this.tempo_espera = tempo_espera;
 		this.status = status;
 		this.file_name = file_name;
-		this.categoria = categoria;
-		this.carousel = carousel;
+		this.categorie = categorie;
+		this.typeProduct = typeProduct;
+		this.position = position;
 	}
 
 	@Override
 	public String toString() {
 		return "Product [id=" + id + ", title=" + title + ", description=" + description + ", qtd_itens=" + qtd_itens
 				+ ", observation=" + observation + ", preco=" + preco + ", tempo_espera=" + tempo_espera + ", status="
-				+ status + ", file_name=" + file_name + ", categoria=" + categoria + "]";
+				+ status + ", file_name=" + file_name + ", categorie=" + categorie + ", like=" + like + ", typeProduct="
+				+ typeProduct + ", position=" + position + "]";
 	}
 
 	public String getId() {
@@ -127,12 +132,12 @@ public class Product {
 		this.file_name = file_name;
 	}
 
-	public String getCategoria() {
-		return categoria;
+	public String getCategorie() {
+		return categorie;
 	}
 
-	public void setCategoria(String categoria) {
-		this.categoria = categoria;
+	public void setCategorie(String categorie) {
+		this.categorie = categorie;
 	}
 
 	public String getLike() {
@@ -143,12 +148,20 @@ public class Product {
 		this.like = like;
 	}
 
-	public String getCarousel() {
-		return carousel;
+	public String getTypeProduct() {
+		return typeProduct;
 	}
 
-	public void setCarousel(String carousel) {
-		this.carousel = carousel;
+	public void setTypeProduct(String typeProduct) {
+		this.typeProduct = typeProduct;
+	}
+
+	public String getPosition() {
+		return position;
+	}
+
+	public void setPosition(String position) {
+		this.position = position;
 	}
 
 }

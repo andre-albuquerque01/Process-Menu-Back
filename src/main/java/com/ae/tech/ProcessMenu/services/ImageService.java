@@ -14,13 +14,22 @@ import org.springframework.web.multipart.MultipartFile;
 @Service
 public class ImageService {
 
-	public String saveImageToStorage(String uploadDirectory, MultipartFile imageFile) throws IOException {
-		String uniqueFilename = UUID.randomUUID() + "_" + LocalDateTime.now().toInstant(ZoneOffset.of("-03:00"));
-		Path uploadPath = Path.of(uploadDirectory);
+	public String saveImageToStorage(MultipartFile imageFile) throws IOException {
+		String originalFile = imageFile.getOriginalFilename();
+		int i = originalFile.lastIndexOf('.');
+		String fileExtension = "";
+		if (i > 0) {
+			fileExtension = originalFile.substring(i + 1);
+		}
+		String nameFilename = (UUID.randomUUID() + "_" + LocalDateTime.now().toInstant(ZoneOffset.of("-03:00")))
+				.replaceAll("[^\\w\\s]", "_");
+		String uniqueFilename = nameFilename + "." + fileExtension;
+		Path uploadPath = Path.of("Imagem/");
 		Path filePath = uploadPath.resolve(uniqueFilename);
 		if (!Files.exists(uploadPath))
 			Files.createDirectories(uploadPath);
 		Files.copy(imageFile.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
 		return uniqueFilename;
 	}
+
 }

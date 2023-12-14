@@ -62,11 +62,9 @@ public class AuthenticationController {
 		try {
 			var usernamePassword = new UsernamePasswordAuthenticationToken(data.email(), data.password());
 			var auth = this.authenticationManager.authenticate(usernamePassword);
-
 			var token = tokenService.generateToken((User) auth.getPrincipal());
 			return ResponseEntity.ok(new LoginResponseDTO(token));
 		} catch (Exception e) {
-			e.printStackTrace();
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 		}
 	}
