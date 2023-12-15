@@ -25,6 +25,8 @@ public class Product {
 
 	private String file_name;
 
+	private String idImage;
+
 	private String categorie;
 
 	private String like;
@@ -37,7 +39,7 @@ public class Product {
 	}
 
 	public Product(String title, String description, int qtd_itens, String observation, double preco,
-			String tempo_espera, boolean status, String file_name, String categorie, String typeProduct,
+			String tempo_espera, boolean status, String file_name, String idImage, String categorie, String typeProduct,
 			String position) {
 		this.title = title;
 		this.description = description;
@@ -47,6 +49,7 @@ public class Product {
 		this.tempo_espera = tempo_espera;
 		this.status = status;
 		this.file_name = file_name;
+		this.idImage = idImage;
 		this.categorie = categorie;
 		this.typeProduct = typeProduct;
 		this.position = position;
@@ -56,8 +59,8 @@ public class Product {
 	public String toString() {
 		return "Product [id=" + id + ", title=" + title + ", description=" + description + ", qtd_itens=" + qtd_itens
 				+ ", observation=" + observation + ", preco=" + preco + ", tempo_espera=" + tempo_espera + ", status="
-				+ status + ", file_name=" + file_name + ", categorie=" + categorie + ", like=" + like + ", typeProduct="
-				+ typeProduct + ", position=" + position + "]";
+				+ status + ", file_name=" + file_name + ", idImage=" + idImage + ", categorie=" + categorie + ", like="
+				+ like + ", typeProduct=" + typeProduct + ", position=" + position + "]";
 	}
 
 	public String getId() {
@@ -162,6 +165,14 @@ public class Product {
 
 	public void setPosition(String position) {
 		this.position = position;
+	}
+
+	public String getIdImage() {
+		return idImage;
+	}
+
+	public void setIdImage(String idImage) {
+		this.idImage = idImage;
 	}
 
 }

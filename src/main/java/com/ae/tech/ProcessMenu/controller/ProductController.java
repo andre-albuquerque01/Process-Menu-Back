@@ -1,5 +1,6 @@
 package com.ae.tech.ProcessMenu.controller;
 
+import java.awt.Image;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -7,7 +8,6 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,7 +22,9 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.ae.tech.ProcessMenu.entity.DTO.ProductResponseDTO;
+import com.ae.tech.ProcessMenu.entity.product.ImageProduct;
 import com.ae.tech.ProcessMenu.entity.product.Product;
+import com.ae.tech.ProcessMenu.repositorio.ImageProductRepository;
 import com.ae.tech.ProcessMenu.repositorio.ProductRepository;
 import com.ae.tech.ProcessMenu.services.ImageService;
 
@@ -37,6 +39,9 @@ public class ProductController {
 
 	@Autowired
 	private ImageService imageService;
+
+	@Autowired
+	private ImageProductRepository imageProductRepository;
 
 	@GetMapping("/")
 	public ResponseEntity<List<Product>> getAllProduct() {
@@ -74,12 +79,17 @@ public class ProductController {
 		}
 	}
 
-	@PostMapping(path = "/register")
+	@PostMapping("/register")
 	public ResponseEntity<Product> createProduct(@RequestBody @Valid ProductResponseDTO data) throws IOException {
 		try {
+			String file = imageService.getFileName();
+			String fileId = imageService.getFileId();
+			if (file.isEmpty())
+				return ResponseEntity.badRequest().build();
 			Product _product = new Product(data.title(), data.description(), data.qtd_itens(), data.observation(),
-					data.preco(), data.tempo_espera(), data.status(), data.file_name(), data.categorie(),
+					data.preco(), data.tempo_espera(), data.status(), file, fileId, data.categorie(),
 					data.typeProduct(), data.position());
+			imageService.setFileName("");
 			Product savedProduct = this.productRepository.save(_product);
 			return ResponseEntity.ok(savedProduct);
 		} catch (Exception e) {
@@ -88,13 +98,14 @@ public class ProductController {
 		}
 	}
 
-	@PostMapping(path = "/image")
-	public ResponseEntity<byte[]> createImage(@RequestBody MultipartFile file) throws IOException {
+	@PostMapping("/image")
+	public ResponseEntity<ImageProduct> createImage(@RequestBody MultipartFile file) throws IOException {
 		try {
 			var saveImage = imageService.saveImageToStorage(file);
-			Product _product = new Product("", "", 0, "", 5, "", true, saveImage, "", "", "");
-			Product savedProduct = this.productRepository.save(_product);
-			return new ResponseEntity<>(null, HttpStatus.OK);
+			ImageProduct _image = new ImageProduct(saveImage);
+			ImageProduct savedImageProduct = this.imageProductRepository.save(_image);
+			imageService.savePathName(savedImageProduct.getId(), savedImageProduct.getFileName());
+			return ResponseEntity.ok(savedImageProduct);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -118,12 +129,36 @@ public class ProductController {
 		}
 	}
 
-	@PutMapping(path = "/alt/{id}")
-	public ResponseEntity<Product> updateProduct(@PathVariable(value = "id") String id,
-			@Valid @RequestBody Product data, MultipartFile file) {
+	@PutMapping("/image/{id}")
+	public ResponseEntity<ImageProduct> updateImage(@PathVariable(value = "id") String id,
+			@RequestBody MultipartFile file) throws IOException {
 		try {
+			Optional<ImageProduct> imageProduct = imageProductRepository.findById(id);
+			if (imageProduct.isPresent()) {
+				var saveImage = imageService.saveImageToStorage(file);
+				ImageProduct _image = imageProduct.get();
+				_image.setFileName(saveImage);
+				imageService.savePathName(id, saveImage);
+				return new ResponseEntity<>(imageProductRepository.save(_image), HttpStatus.OK);
+			} else {
+				return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+	@PutMapping("/alt/{id}")
+	public ResponseEntity<Product> updateProduct(@PathVariable(value = "id") String id,
+			@Valid @RequestBody Product data) {
+		try {
+			String file = imageService.getFileName();
+			if (file.isEmpty())
+				return ResponseEntity.badRequest().build();
+			imageService.setFileName("");
 			Optional<Product> productData = productRepository.findById(id);
-			var saveImg = imageService.saveImageToStorage(file);
 			if (productData.isPresent()) {
 				Product _Product = productData.get();
 				_Product.setTitle(data.getTitle());
@@ -133,7 +168,7 @@ public class ProductController {
 				_Product.setPreco(data.getPreco());
 				_Product.setTempo_espera(data.getTempo_espera());
 				_Product.setStatus(data.isStatus());
-				_Product.setFile_name(saveImg);
+				_Product.setFile_name(file);
 				_Product.setCategorie(data.getCategorie());
 				_Product.setTypeProduct(data.getTypeProduct());
 				_Product.setPosition(data.getPosition());

@@ -22,13 +22,11 @@ public class OrderProducts {
 
 	private String categoria;
 
-	private String like;
-
 	public OrderProducts() {
 	}
 
 	public OrderProducts(String id, String title, String description, int qtd_itens, String observation, double preco,
-			String tempo_espera, boolean status, String file_name, String categoria, String like) {
+			String tempo_espera, boolean status, String file_name, String categoria) {
 		this.id = id;
 		this.title = title;
 		this.description = description;
@@ -39,15 +37,13 @@ public class OrderProducts {
 		this.status = status;
 		this.file_name = file_name;
 		this.categoria = categoria;
-		this.like = like;
 	}
 
 	@Override
 	public String toString() {
 		return "OrderProducts [id=" + id + ", title=" + title + ", description=" + description + ", qtd_itens="
 				+ qtd_itens + ", observation=" + observation + ", preco=" + preco + ", tempo_espera=" + tempo_espera
-				+ ", status=" + status + ", file_name=" + file_name + ", categoria=" + categoria + ", like=" + like
-				+ "]";
+				+ ", status=" + status + ", file_name=" + file_name + ", categoria=" + categoria + "]";
 	}
 
 	public String getId() {
@@ -128,14 +124,6 @@ public class OrderProducts {
 
 	public void setCategoria(String categoria) {
 		this.categoria = categoria;
-	}
-
-	public String getLike() {
-		return like;
-	}
-
-	public void setLike(String like) {
-		this.like = like;
 	}
 
 }

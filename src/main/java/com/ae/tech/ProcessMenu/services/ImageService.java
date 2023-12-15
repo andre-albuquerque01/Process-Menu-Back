@@ -5,14 +5,15 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.time.LocalDateTime;
-import java.time.ZoneOffset;
-import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 @Service
 public class ImageService {
+
+	private volatile String fileName;
+	private volatile String fileId;
 
 	public String saveImageToStorage(MultipartFile imageFile) throws IOException {
 		String originalFile = imageFile.getOriginalFilename();
@@ -21,15 +22,48 @@ public class ImageService {
 		if (i > 0) {
 			fileExtension = originalFile.substring(i + 1);
 		}
-		String nameFilename = (UUID.randomUUID() + "_" + LocalDateTime.now().toInstant(ZoneOffset.of("-03:00")))
-				.replaceAll("[^\\w\\s]", "_");
-		String uniqueFilename = nameFilename + "." + fileExtension;
+		String nameFilename = generateUniqueFilename(fileExtension);
+		String uniqueFilename = nameFilename;
 		Path uploadPath = Path.of("Imagem/");
 		Path filePath = uploadPath.resolve(uniqueFilename);
-		if (!Files.exists(uploadPath))
-			Files.createDirectories(uploadPath);
-		Files.copy(imageFile.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+		try {
+			if (!Files.exists(uploadPath))
+				Files.createDirectories(uploadPath);
+			Files.copy(imageFile.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		return uniqueFilename;
+	}
+
+	private String generateUniqueFilename(String fileExtension) {
+		return (RandomService.generateRandomAlphaNumeric(5) + "_" + LocalDateTime.now()).replaceAll("[^\\w\\s]", "_")
+				+ "." + fileExtension;
+	}
+
+	public void savePathName(String id, String fileName) {
+		synchronized (this) {
+			setFileName(fileName);
+			setFileName(id);
+		}
+	}
+
+	public String getFileName() {
+		synchronized (this) {
+			return fileName;
+		}
+	}
+
+	public void setFileName(String fileName) {
+		this.fileName = fileName;
+	}
+
+	public String getFileId() {
+		return fileId;
+	}
+
+	public void setFileId(String fileId) {
+		this.fileId = fileId;
 	}
 
 }
