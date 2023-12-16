@@ -6,44 +6,29 @@ public class OrderProducts {
 
 	private String title;
 
-	private String description;
-
-	private int qtd_itens;
-
 	private String observation;
 
 	private double preco;
 
 	private String tempo_espera;
 
-	private boolean status;
-
 	private String file_name;
-
-	private String categoria;
 
 	public OrderProducts() {
 	}
 
-	public OrderProducts(String id, String title, String description, int qtd_itens, String observation, double preco,
-			String tempo_espera, boolean status, String file_name, String categoria) {
-		this.id = id;
+	public OrderProducts(String title, String observation, double preco, String tempo_espera, String file_name) {
 		this.title = title;
-		this.description = description;
-		this.qtd_itens = qtd_itens;
 		this.observation = observation;
 		this.preco = preco;
 		this.tempo_espera = tempo_espera;
-		this.status = status;
 		this.file_name = file_name;
-		this.categoria = categoria;
 	}
 
 	@Override
 	public String toString() {
-		return "OrderProducts [id=" + id + ", title=" + title + ", description=" + description + ", qtd_itens="
-				+ qtd_itens + ", observation=" + observation + ", preco=" + preco + ", tempo_espera=" + tempo_espera
-				+ ", status=" + status + ", file_name=" + file_name + ", categoria=" + categoria + "]";
+		return "OrderProducts [id=" + id + ", title=" + title + ", observation=" + observation + ", preco=" + preco
+				+ ", tempo_espera=" + tempo_espera + ", file_name=" + file_name + "]";
 	}
 
 	public String getId() {
@@ -60,22 +45,6 @@ public class OrderProducts {
 
 	public void setTitle(String title) {
 		this.title = title;
-	}
-
-	public String getDescription() {
-		return description;
-	}
-
-	public void setDescription(String description) {
-		this.description = description;
-	}
-
-	public int getQtd_itens() {
-		return qtd_itens;
-	}
-
-	public void setQtd_itens(int qtd_itens) {
-		this.qtd_itens = qtd_itens;
 	}
 
 	public String getObservation() {
@@ -102,28 +71,12 @@ public class OrderProducts {
 		this.tempo_espera = tempo_espera;
 	}
 
-	public boolean isStatus() {
-		return status;
-	}
-
-	public void setStatus(boolean status) {
-		this.status = status;
-	}
-
 	public String getFile_name() {
 		return file_name;
 	}
 
 	public void setFile_name(String file_name) {
 		this.file_name = file_name;
-	}
-
-	public String getCategoria() {
-		return categoria;
-	}
-
-	public void setCategoria(String categoria) {
-		this.categoria = categoria;
 	}
 
 }

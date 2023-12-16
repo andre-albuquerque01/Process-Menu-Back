@@ -29,8 +29,8 @@ public class SecurytiConfiguration {
 						.requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
 						.requestMatchers(HttpMethod.POST, "/auth/register").permitAll()
 						.requestMatchers(HttpMethod.POST, "/auth/recover").permitAll()
-						.requestMatchers(HttpMethod.POST, "/auth/logout").authenticated()
-						.requestMatchers(HttpMethod.PUT, "/auth/users/{id}").authenticated()
+						.requestMatchers(HttpMethod.PUT, "/auth/users/{id}").hasRole("USER")
+						.requestMatchers(HttpMethod.GET, "/auth/logout").hasRole("USER")
 						
 						.requestMatchers(HttpMethod.GET, "/product/").permitAll()
 						.requestMatchers(HttpMethod.GET, "/product/searchProduct/{name}").permitAll()
@@ -39,7 +39,7 @@ public class SecurytiConfiguration {
 						.requestMatchers(HttpMethod.POST, "/product/image").hasRole("ADMIN")
 						.requestMatchers(HttpMethod.PUT, "/product/alt/{id}").hasRole("ADMIN")
 						.requestMatchers(HttpMethod.DELETE, "/product/del/{id}").hasRole("ADMIN")
-						.requestMatchers(HttpMethod.PATCH, "/product/like/{id}").authenticated()
+						.requestMatchers(HttpMethod.PATCH, "/product/like/{id}").hasRole("USER")
 						
 						.requestMatchers(HttpMethod.GET, "/order/orders").hasRole("FUNCIONARIOS")
 						.requestMatchers(HttpMethod.GET, "/order/{id}").hasRole("USER")

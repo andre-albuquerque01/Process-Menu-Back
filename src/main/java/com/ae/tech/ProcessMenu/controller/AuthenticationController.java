@@ -13,6 +13,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -63,7 +64,8 @@ public class AuthenticationController {
 			var usernamePassword = new UsernamePasswordAuthenticationToken(data.email(), data.password());
 			var auth = this.authenticationManager.authenticate(usernamePassword);
 			var token = tokenService.generateToken((User) auth.getPrincipal());
-			return ResponseEntity.ok(new LoginResponseDTO(token));
+			var id = ((User) auth.getPrincipal()).getId().toString();
+			return ResponseEntity.ok(new LoginResponseDTO(token, id));
 		} catch (Exception e) {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 		}
@@ -142,22 +144,24 @@ public class AuthenticationController {
 			}
 			String encrytedPassword = new BCryptPasswordEncoder().encode(data.getPassword());
 			User _User = userData.get();
-			if (_User.getAtivo() && _User.getPassword() == encrytedPassword) {
+			if (_User.getAtivo() && new BCryptPasswordEncoder().matches(data.getPassword(), _User.getPassword())) {
 				_User.setFirstName(data.getFirstName());
 				_User.setLastName(data.getLastName());
 				_User.setEmail(data.getEmail());
 				_User.setPassword(encrytedPassword);
 				_User.setBirthday(data.getBirthday());
+				_User.setCpf(data.getCpf());
 				_User.setDDD(data.getDDD());
 				_User.setPhoneNumber(data.getPhoneNumber());
-				_User.setTermsService(data.getTermsService());
+				_User.setAddressUser(new AddressUser());
 				AddressUser userAddress = _User.getAddressUser();
 				userAddress.setCep(data.getAddressUser().getCep());
 				userAddress.setLogradouro(data.getAddressUser().getLogradouro());
 				userAddress.setBairro(data.getAddressUser().getBairro());
 				userAddress.setUf(data.getAddressUser().getUf());
 				userAddress.setComplemento(data.getAddressUser().getComplemento());
-				return new ResponseEntity<>(userRepository.save(_User), HttpStatus.OK);
+				_User = userRepository.save(_User);
+				return ResponseEntity.ok().build();
 			} else {
 				return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 			}
@@ -165,11 +169,33 @@ public class AuthenticationController {
 			e.printStackTrace();
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 		}
-
+	}
+	
+	@PatchMapping("/usersPass/{id}")
+	public ResponseEntity<User> updateUserPassword(@PathVariable(value = "id") String id, @Valid @RequestBody User data) {
+		try {
+			Optional<User> userData = userRepository.findById(id);
+			if (userData.isEmpty()) {
+				return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+			}
+			String encrytedNewPassword = new BCryptPasswordEncoder().encode(data.getNewPassword());
+			User _User = userData.get();
+			if (_User.getAtivo() && new BCryptPasswordEncoder().matches(data.getPassword(), _User.getPassword())) {
+				_User.setPassword(encrytedNewPassword);
+				_User = userRepository.save(_User);
+				return ResponseEntity.ok().build();
+			} else {
+				return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+		}
 	}
 
-	@PostMapping("/logout")
-	public ResponseEntity<?> logout(HttpServletRequest request) {
+	// Desnecessário
+	@GetMapping("/logout")
+	public ResponseEntity<String> logout(HttpServletRequest request) {
 		String token = request.getHeader("Authorization").replace("Bearer ", "");
 		return ResponseEntity.ok().build();
 	}

@@ -1,14 +1,7 @@
 package com.ae.tech.ProcessMenu.entity.users;
 
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
-
-@Document(collection = "Address")
 public class AddressUser {
 
-	@Id
-	private String id;
-	
 	private String cep;
 
 	private String logradouro;
@@ -20,7 +13,7 @@ public class AddressUser {
 	private String complemento;
 
 	public AddressUser() {
-		
+
 	}
 
 	public AddressUser(String cep, String logradouro, String bairro, String uf, String complemento) {
@@ -73,10 +66,8 @@ public class AddressUser {
 
 	@Override
 	public String toString() {
-		return "AddressUser [id=" + id + ", cep=" + cep + ", logradouro=" + logradouro + ", bairro=" + bairro + ", uf="
-				+ uf + ", complemento=" + complemento + "]";
+		return "AddressUser [ 	cep=" + cep + ", logradouro=" + logradouro + ", bairro=" + bairro + ", uf=" + uf
+				+ ", complemento=" + complemento + "]";
 	}
-	
-	
-	
+
 }

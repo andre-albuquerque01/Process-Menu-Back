@@ -19,38 +19,31 @@ public class User implements UserDetails {
 	@Id
 	private String id;
 
-	@Email(message = "Email should be valid")
 	private String email;
 
-	@NotNull
 	private String password;
 
-	@NotNull(message = "CPF can't be null")
 	private String cpf;
 
-	@NotNull(message = "Birthday cannot be null")
 	private String birthday;
 
-	@NotNull(message = "First name cannot be null")
 	private String firstName;
 
-	@NotNull(message = "Last name cannot be null")
 	private String lastName;
 
-	@NotNull(message = "Phone number cannot be null")
 	private String phoneNumber;
 
-	@NotNull(message = "DDD cannot be null")
 	private String DDD;
 
 	private UserRole role;
 
-	@DBRef(lazy = true)
 	private AddressUser addressUser;
 
 	private Boolean ativo;
 
 	private Boolean termsService;
+
+	private String newPassword;
 
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -190,6 +183,14 @@ public class User implements UserDetails {
 
 	public void setTermsService(Boolean termsService) {
 		this.termsService = termsService;
+	}
+
+	public String getNewPassword() {
+		return newPassword;
+	}
+
+	public void setNewPassword(String newPassword) {
+		this.newPassword = newPassword;
 	}
 
 	@Override
