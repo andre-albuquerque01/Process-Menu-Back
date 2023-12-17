@@ -1,8 +1,6 @@
 package com.ae.tech.ProcessMenu.controller;
 
-import java.awt.Image;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -46,12 +44,11 @@ public class ProductController {
 	@GetMapping("/")
 	public ResponseEntity<List<Product>> getAllProduct() {
 		try {
-			List<Product> list = new ArrayList<Product>();
-			if (!list.isEmpty()) {
-				productRepository.findAll().forEach(list::add);
-				return new ResponseEntity<>(list, HttpStatus.OK);
-			} else {
+			List<Product> list = productRepository.findAll();
+			if (list.isEmpty()) {
 				return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+			} else {
+				return new ResponseEntity<>(list, HttpStatus.OK);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -61,21 +58,31 @@ public class ProductController {
 
 	@GetMapping("/searchProduct/{name}")
 	public ResponseEntity<List<Product>> getNameProduct(@PathVariable(value = "name") String name) {
-		List<Product> listTitle = productRepository.findByTitle(name);
-		if (!listTitle.isEmpty()) {
-			return new ResponseEntity<>(listTitle, HttpStatus.OK);
-		} else {
-			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		try {
+			List<Product> listTitle = productRepository.findByTitle(name);
+			if (listTitle.isEmpty()) {
+				return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+			} else {
+				return new ResponseEntity<>(listTitle, HttpStatus.OK);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 
 	@GetMapping("/searchCategory/{category}")
 	public ResponseEntity<List<Product>> getCategory(@PathVariable(value = "category") String category) {
-		List<Product> listCategory = productRepository.findByCategorie(category);
-		if (!listCategory.isEmpty()) {
-			return new ResponseEntity<>(listCategory, HttpStatus.OK);
-		} else {
-			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		try {
+			List<Product> list = productRepository.findByCategorie(category);
+			if (list.isEmpty()) {
+				return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+			} else {
+				return new ResponseEntity<>(list, HttpStatus.OK);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 
@@ -139,7 +146,8 @@ public class ProductController {
 				ImageProduct _image = imageProduct.get();
 				_image.setFileName(saveImage);
 				imageService.savePathName(id, saveImage);
-				return new ResponseEntity<>(imageProductRepository.save(_image), HttpStatus.OK);
+				var save = imageProductRepository.save(_image);
+				return new ResponseEntity<>(save, HttpStatus.OK);
 			} else {
 				return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 			}
@@ -155,11 +163,14 @@ public class ProductController {
 			@Valid @RequestBody Product data) {
 		try {
 			String file = imageService.getFileName();
-			if (file.isEmpty())
+			String idImage = imageService.getFileId();
+			if (file.isEmpty()) {
 				return ResponseEntity.badRequest().build();
-			imageService.setFileName("");
+			}
+			System.out.println(file);
+			System.out.println(idImage);
 			Optional<Product> productData = productRepository.findById(id);
-			if (productData.isPresent()) {
+			if (productData.isPresent() && !file.isEmpty()) {
 				Product _Product = productData.get();
 				_Product.setTitle(data.getTitle());
 				_Product.setDescription(data.getDescription());
@@ -169,6 +180,7 @@ public class ProductController {
 				_Product.setTempo_espera(data.getTempo_espera());
 				_Product.setStatus(data.isStatus());
 				_Product.setFile_name(file);
+				_Product.setIdImage(idImage);
 				_Product.setCategorie(data.getCategorie());
 				_Product.setTypeProduct(data.getTypeProduct());
 				_Product.setPosition(data.getPosition());

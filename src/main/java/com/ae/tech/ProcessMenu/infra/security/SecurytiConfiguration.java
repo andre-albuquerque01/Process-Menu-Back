@@ -37,11 +37,12 @@ public class SecurytiConfiguration {
 						.requestMatchers(HttpMethod.GET, "/product/searchCategory/{category}").permitAll()
 						.requestMatchers(HttpMethod.POST, "/product/register").hasRole("ADMIN")
 						.requestMatchers(HttpMethod.POST, "/product/image").hasRole("ADMIN")
+						.requestMatchers(HttpMethod.PUT, "/product/image/{id}").hasRole("ADMIN")
 						.requestMatchers(HttpMethod.PUT, "/product/alt/{id}").hasRole("ADMIN")
 						.requestMatchers(HttpMethod.DELETE, "/product/del/{id}").hasRole("ADMIN")
 						.requestMatchers(HttpMethod.PATCH, "/product/like/{id}").hasRole("USER")
 						
-						.requestMatchers(HttpMethod.GET, "/order/orders").hasRole("FUNCIONARIOS")
+						.requestMatchers(HttpMethod.GET, "/order/orders").hasRole("FUNCIONARIO")
 						.requestMatchers(HttpMethod.GET, "/order/{id}").hasRole("USER")
 						.requestMatchers(HttpMethod.GET, "/order/searchOrder/{number}").hasRole("USER")
 						.requestMatchers(HttpMethod.POST, "/order/insert").hasRole("USER")

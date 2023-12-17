@@ -17,7 +17,8 @@ public class OrderProducts {
 	public OrderProducts() {
 	}
 
-	public OrderProducts(String title, String observation, double preco, String tempo_espera, String file_name) {
+	public OrderProducts(String id, String title, String observation, double preco, String tempo_espera, String file_name) {
+		this.id = id;
 		this.title = title;
 		this.observation = observation;
 		this.preco = preco;

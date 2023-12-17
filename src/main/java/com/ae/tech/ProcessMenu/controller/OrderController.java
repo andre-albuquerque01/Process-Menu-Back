@@ -7,6 +7,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -24,6 +25,7 @@ import com.ae.tech.ProcessMenu.services.RandomService;
 
 import jakarta.validation.Valid;
 
+@CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/order")
 public class OrderController {
@@ -34,12 +36,11 @@ public class OrderController {
 	@GetMapping("/orders")
 	public ResponseEntity<List<Order>> getAllOrders() {
 		try {
-			List<Order> list = new ArrayList<Order>();
-			if (!list.isEmpty()) {
-				orderRepository.findAll().forEach(list::add);
-				return new ResponseEntity<>(list, HttpStatus.OK);
-			} else {
+			List<Order> list = orderRepository.findAll();
+			if (list.isEmpty()) {
 				return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+			} else {
+				return new ResponseEntity<>(list, HttpStatus.OK);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -65,12 +66,18 @@ public class OrderController {
 	}
 
 	@GetMapping("/searchOrder/{number}")
-	public ResponseEntity<List<Order>> getBySearchOrder(@PathVariable(value = "number") String number) {
-		List<Order> orders = orderRepository.findByNumberOrder(number);
-		if (!orders.isEmpty()) {
-			return new ResponseEntity<>(orders, HttpStatus.OK);
-		} else {
-			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+	public ResponseEntity<Order> getBySearchOrder(@PathVariable(value = "number") String number) {
+		try {
+			Optional<Order> orders = orderRepository.findByNumberOrder(number);
+			if (orders.isPresent()) {
+				Order order = orders.get();
+				return new ResponseEntity<>(order, HttpStatus.OK);
+			} else {
+				return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 
@@ -81,8 +88,9 @@ public class OrderController {
 			if (orderRepository.findByNumberOrder(numberOrder) == null)
 				return ResponseEntity.badRequest().build();
 
-			Order _order = new Order(data.products(), "#" + numberOrder, data.idUser(), data.formPay(), data.qtdItens(),
-					data.table(), data.precoTotal(), data.status(), data.impostoTributos(), data.nfe(), data.dateOrder(), data.tip());
+			Order _order = new Order(data.products(), numberOrder, data.idUser(), data.formPay(), data.qtdItens(),
+					data.table(), data.precoTotal(), data.status(), data.impostoTributos(), data.nfe(),
+					data.dateOrder(), data.tip());
 			Order saveorder = this.orderRepository.save(_order);
 			return ResponseEntity.ok(saveorder);
 		} catch (Exception e) {
@@ -93,24 +101,27 @@ public class OrderController {
 
 	@PutMapping("/update/{id}")
 	public ResponseEntity<Order> updateOrder(@PathVariable(value = "id") String id, @Valid @RequestBody Order data) {
-		Optional<Order> orderData = orderRepository.findById(id);
 		try {
+			Optional<Order> orderData = orderRepository.findById(id);
 			Order _Order = orderData.get();
-			_Order.setProducts(data.getProducts());
-			_Order.setIdUser(data.getIdUser());
-			_Order.setFormPay(data.getFormPay());
-			_Order.setQtdItens(data.getQtdItens());
-			_Order.setTable(data.getTable());
-			_Order.setPrecoTotal(data.getPrecoTotal());
-			_Order.setStatus(data.getStatus());
-			_Order.setImpostoTributos(data.getImpostoTributos());
-			_Order.setNfe(data.getNfe());
-			_Order.setDateOrder(data.getDateOrder());
-			_Order.setTip(data.getTip());
-			return new ResponseEntity<>(orderRepository.save(_Order), HttpStatus.OK);
+			if (orderData.isPresent()) {
+				_Order.setProducts(data.getProducts());
+				_Order.setFormPay(data.getFormPay());
+				_Order.setQtdItens(data.getQtdItens());
+				_Order.setTable(data.getTable());
+				_Order.setPrecoTotal(data.getPrecoTotal());
+				_Order.setStatus(data.getStatus());
+				_Order.setImpostoTributos(data.getImpostoTributos());
+				_Order.setNfe(data.getNfe());
+				_Order.setDateOrder(data.getDateOrder());
+				_Order.setTip(data.getTip());
+				return new ResponseEntity<>(orderRepository.save(_Order), HttpStatus.OK);
+			} else {
+				return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
-			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
 		}
 	}
 
@@ -123,12 +134,12 @@ public class OrderController {
 			return new ResponseEntity<>(orderRepository.save(_order), HttpStatus.OK);
 		} catch (Exception e) {
 			e.printStackTrace();
-			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
 		}
 	}
 
 	@DeleteMapping("/del/{id}")
-	public ResponseEntity<HttpStatus> deleteOrder(@PathVariable(value = "id") String id) {
+	public ResponseEntity<String> deleteOrder(@PathVariable(value = "id") String id) {
 		try {
 			orderRepository.deleteById(id);
 			return new ResponseEntity<>(HttpStatus.OK);

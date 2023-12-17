@@ -12,8 +12,8 @@ import org.springframework.web.multipart.MultipartFile;
 @Service
 public class ImageService {
 
-	private volatile String fileName;
-	private volatile String fileId;
+	private String fileName;
+	private String fileId;
 
 	public String saveImageToStorage(MultipartFile imageFile) throws IOException {
 		String originalFile = imageFile.getOriginalFilename();
@@ -42,24 +42,21 @@ public class ImageService {
 	}
 
 	public void savePathName(String id, String fileName) {
-		synchronized (this) {
-			setFileName(fileName);
-			setFileName(id);
-		}
+		setFileId(id);
+		setFileName(fileName);
+		System.out.println(id + " - " + fileName);
 	}
 
 	public String getFileName() {
-		synchronized (this) {
-			return fileName;
-		}
-	}
-
-	public void setFileName(String fileName) {
-		this.fileName = fileName;
+		return fileName;
 	}
 
 	public String getFileId() {
 		return fileId;
+	}
+
+	public void setFileName(String fileName) {
+		this.fileName = fileName;
 	}
 
 	public void setFileId(String fileId) {
