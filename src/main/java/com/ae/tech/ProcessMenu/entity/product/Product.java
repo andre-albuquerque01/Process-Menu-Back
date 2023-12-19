@@ -37,6 +37,10 @@ public class Product {
 
 	public Product() {
 	}
+	
+	public Product(int qtd_itens) {
+		this.qtd_itens = qtd_itens;
+	}
 
 	public Product(String title, String description, int qtd_itens, String observation, double preco,
 			String tempo_espera, boolean status, String file_name, String idImage, String categorie, String typeProduct,

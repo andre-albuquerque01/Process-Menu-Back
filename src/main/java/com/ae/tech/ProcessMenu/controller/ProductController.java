@@ -97,6 +97,7 @@ public class ProductController {
 					data.preco(), data.tempo_espera(), data.status(), file, fileId, data.categorie(),
 					data.typeProduct(), data.position());
 			imageService.setFileName("");
+			imageService.setFileId("");
 			Product savedProduct = this.productRepository.save(_product);
 			return ResponseEntity.ok(savedProduct);
 		} catch (Exception e) {
@@ -167,8 +168,6 @@ public class ProductController {
 			if (file.isEmpty()) {
 				return ResponseEntity.badRequest().build();
 			}
-			System.out.println(file);
-			System.out.println(idImage);
 			Optional<Product> productData = productRepository.findById(id);
 			if (productData.isPresent() && !file.isEmpty()) {
 				Product _Product = productData.get();
@@ -184,7 +183,9 @@ public class ProductController {
 				_Product.setCategorie(data.getCategorie());
 				_Product.setTypeProduct(data.getTypeProduct());
 				_Product.setPosition(data.getPosition());
-				return new ResponseEntity<>(productRepository.save(_Product), HttpStatus.OK);
+				imageService.setFileName("");
+				imageService.setFileId("");
+				return ResponseEntity.ok().build();
 			} else {
 				return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 			}

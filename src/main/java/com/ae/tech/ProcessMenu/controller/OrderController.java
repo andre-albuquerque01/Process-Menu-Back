@@ -1,6 +1,5 @@
 package com.ae.tech.ProcessMenu.controller;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -20,7 +19,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.ae.tech.ProcessMenu.entity.DTO.OrderResponseDTO;
 import com.ae.tech.ProcessMenu.entity.product.Order;
+import com.ae.tech.ProcessMenu.entity.product.Product;
 import com.ae.tech.ProcessMenu.repositorio.OrderRepository;
+import com.ae.tech.ProcessMenu.repositorio.ProductRepository;
 import com.ae.tech.ProcessMenu.services.RandomService;
 
 import jakarta.validation.Valid;
@@ -32,6 +33,9 @@ public class OrderController {
 
 	@Autowired
 	private OrderRepository orderRepository;
+	
+	@Autowired
+	private ProductRepository productRepository;
 
 	@GetMapping("/orders")
 	public ResponseEntity<List<Order>> getAllOrders() {
@@ -91,6 +95,8 @@ public class OrderController {
 			Order _order = new Order(data.products(), numberOrder, data.idUser(), data.formPay(), data.qtdItens(),
 					data.table(), data.precoTotal(), data.status(), data.impostoTributos(), data.nfe(),
 					data.dateOrder(), data.tip());
+			Product _product = new Product(-1);
+			Product savedProduct = this.productRepository.save(_product);
 			Order saveorder = this.orderRepository.save(_order);
 			return ResponseEntity.ok(saveorder);
 		} catch (Exception e) {

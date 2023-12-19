@@ -14,22 +14,34 @@ public class OrderProducts {
 
 	private String file_name;
 
+	private int qtd_itens;
+
 	public OrderProducts() {
 	}
 
-	public OrderProducts(String id, String title, String observation, double preco, String tempo_espera, String file_name) {
+	public OrderProducts(String id, String title, String observation, double preco, String tempo_espera,
+			String file_name, int qtd_itens) {
 		this.id = id;
 		this.title = title;
 		this.observation = observation;
 		this.preco = preco;
 		this.tempo_espera = tempo_espera;
 		this.file_name = file_name;
+		this.qtd_itens = qtd_itens;
 	}
 
 	@Override
 	public String toString() {
 		return "OrderProducts [id=" + id + ", title=" + title + ", observation=" + observation + ", preco=" + preco
-				+ ", tempo_espera=" + tempo_espera + ", file_name=" + file_name + "]";
+				+ ", tempo_espera=" + tempo_espera + ", file_name=" + file_name + ", qtd_itens=" + qtd_itens + "]";
+	}
+
+	public int getQtd_itens() {
+		return qtd_itens;
+	}
+
+	public void setQtd_itens(int qtd_itens) {
+		this.qtd_itens = qtd_itens;
 	}
 
 	public String getId() {
