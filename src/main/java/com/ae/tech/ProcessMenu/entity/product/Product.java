@@ -31,20 +31,14 @@ public class Product {
 
 	private String like;
 
-	private String typeProduct;
 //	Posição onde vai ficar no sistema
 	private String position;
 
 	public Product() {
 	}
-	
-	public Product(int qtd_itens) {
-		this.qtd_itens = qtd_itens;
-	}
 
 	public Product(String title, String description, int qtd_itens, String observation, double preco,
-			String tempo_espera, boolean status, String file_name, String idImage, String categorie, String typeProduct,
-			String position) {
+			String tempo_espera, boolean status, String file_name, String idImage, String categorie, String position) {
 		this.title = title;
 		this.description = description;
 		this.qtd_itens = qtd_itens;
@@ -55,7 +49,6 @@ public class Product {
 		this.file_name = file_name;
 		this.idImage = idImage;
 		this.categorie = categorie;
-		this.typeProduct = typeProduct;
 		this.position = position;
 	}
 
@@ -64,7 +57,7 @@ public class Product {
 		return "Product [id=" + id + ", title=" + title + ", description=" + description + ", qtd_itens=" + qtd_itens
 				+ ", observation=" + observation + ", preco=" + preco + ", tempo_espera=" + tempo_espera + ", status="
 				+ status + ", file_name=" + file_name + ", idImage=" + idImage + ", categorie=" + categorie + ", like="
-				+ like + ", typeProduct=" + typeProduct + ", position=" + position + "]";
+				+ like + ", position=" + position + "]";
 	}
 
 	public String getId() {
@@ -153,14 +146,6 @@ public class Product {
 
 	public void setLike(String like) {
 		this.like = like;
-	}
-
-	public String getTypeProduct() {
-		return typeProduct;
-	}
-
-	public void setTypeProduct(String typeProduct) {
-		this.typeProduct = typeProduct;
 	}
 
 	public String getPosition() {

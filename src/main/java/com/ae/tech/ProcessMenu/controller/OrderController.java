@@ -95,8 +95,6 @@ public class OrderController {
 			Order _order = new Order(data.products(), numberOrder, data.idUser(), data.formPay(), data.qtdItens(),
 					data.table(), data.precoTotal(), data.status(), data.impostoTributos(), data.nfe(),
 					data.dateOrder(), data.tip());
-			Product _product = new Product(-1);
-			Product savedProduct = this.productRepository.save(_product);
 			Order saveorder = this.orderRepository.save(_order);
 			return ResponseEntity.ok(saveorder);
 		} catch (Exception e) {

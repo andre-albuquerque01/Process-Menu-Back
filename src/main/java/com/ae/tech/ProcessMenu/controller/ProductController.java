@@ -94,8 +94,7 @@ public class ProductController {
 			if (file.isEmpty())
 				return ResponseEntity.badRequest().build();
 			Product _product = new Product(data.title(), data.description(), data.qtd_itens(), data.observation(),
-					data.preco(), data.tempo_espera(), data.status(), file, fileId, data.categorie(),
-					data.typeProduct(), data.position());
+					data.preco(), data.tempo_espera(), data.status(), file, fileId, data.categorie(), data.position());
 			imageService.setFileName("");
 			imageService.setFileId("");
 			Product savedProduct = this.productRepository.save(_product);
@@ -121,7 +120,7 @@ public class ProductController {
 	}
 
 	@PatchMapping("/like/{id}")
-	public ResponseEntity<Product> createLike(@PathVariable(value = "id") String id, @Valid @RequestParam String like) {
+	public ResponseEntity<Product> updateLike(@PathVariable(value = "id") String id, @Valid @RequestParam String like) {
 		try {
 			Optional<Product> productData = productRepository.findById(id);
 			if (productData.isPresent()) {
@@ -136,6 +135,24 @@ public class ProductController {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 		}
 	}
+	
+	@PatchMapping("/qtd/{id}")
+	public ResponseEntity<Product> updateQtd(@PathVariable(value = "id") String id, @Valid @RequestParam Integer qtd) {
+		try {
+			Optional<Product> productData = productRepository.findById(id);
+			if (productData.isPresent()) {
+				Product _Product = productData.get();
+				_Product.setQtd_itens(qtd);
+				return new ResponseEntity<>(productRepository.save(_Product), HttpStatus.OK);
+			} else {
+				return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+		}
+	}
+
 
 	@PutMapping("/image/{id}")
 	public ResponseEntity<ImageProduct> updateImage(@PathVariable(value = "id") String id,
@@ -181,7 +198,6 @@ public class ProductController {
 				_Product.setFile_name(file);
 				_Product.setIdImage(idImage);
 				_Product.setCategorie(data.getCategorie());
-				_Product.setTypeProduct(data.getTypeProduct());
 				_Product.setPosition(data.getPosition());
 				imageService.setFileName("");
 				imageService.setFileId("");
