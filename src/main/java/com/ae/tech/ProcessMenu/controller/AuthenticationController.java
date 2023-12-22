@@ -135,7 +135,7 @@ public class AuthenticationController {
 		}
 	}
 
-	@PutMapping("/users/{id}")
+	@PutMapping("/update/{id}")
 	public ResponseEntity<User> updateUser(@PathVariable(value = "id") String id, @Valid @RequestBody User data) {
 		try {
 			Optional<User> userData = userRepository.findById(id);

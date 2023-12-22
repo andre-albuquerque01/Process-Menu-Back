@@ -33,9 +33,6 @@ public class OrderController {
 
 	@Autowired
 	private OrderRepository orderRepository;
-	
-	@Autowired
-	private ProductRepository productRepository;
 
 	@GetMapping("/orders")
 	public ResponseEntity<List<Order>> getAllOrders() {
@@ -85,7 +82,7 @@ public class OrderController {
 		}
 	}
 
-	@PostMapping("/insert")
+	@PostMapping("/register")
 	public ResponseEntity<Order> createOrder(@RequestBody @Valid OrderResponseDTO data) {
 		try {
 			var numberOrder = RandomService.generateRandomAlphaNumeric(20);

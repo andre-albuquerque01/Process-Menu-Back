@@ -105,7 +105,7 @@ public class ProductController {
 		}
 	}
 
-	@PostMapping("/image")
+	@PostMapping("/register/image")
 	public ResponseEntity<ImageProduct> createImage(@RequestBody MultipartFile file) throws IOException {
 		try {
 			var saveImage = imageService.saveImageToStorage(file);
@@ -136,7 +136,7 @@ public class ProductController {
 		}
 	}
 	
-	@PatchMapping("/qtd/{id}")
+	@PatchMapping("/update/qtd/{id}")
 	public ResponseEntity<Product> updateQtd(@PathVariable(value = "id") String id, @Valid @RequestParam Integer qtd) {
 		try {
 			Optional<Product> productData = productRepository.findById(id);
@@ -154,7 +154,7 @@ public class ProductController {
 	}
 
 
-	@PutMapping("/image/{id}")
+	@PutMapping("/update/image/{id}")
 	public ResponseEntity<ImageProduct> updateImage(@PathVariable(value = "id") String id,
 			@RequestBody MultipartFile file) throws IOException {
 		try {
@@ -176,7 +176,7 @@ public class ProductController {
 		}
 	}
 
-	@PutMapping("/alt/{id}")
+	@PutMapping("/update/{id}")
 	public ResponseEntity<Product> updateProduct(@PathVariable(value = "id") String id,
 			@Valid @RequestBody Product data) {
 		try {
