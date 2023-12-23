@@ -35,7 +35,6 @@ import com.ae.tech.ProcessMenu.services.RandomService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 
-@CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
 @RequestMapping("auth")
 public class AuthenticationController {

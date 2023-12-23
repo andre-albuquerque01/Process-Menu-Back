@@ -26,7 +26,6 @@ import com.ae.tech.ProcessMenu.services.RandomService;
 
 import jakarta.validation.Valid;
 
-@CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/order")
 public class OrderController {
