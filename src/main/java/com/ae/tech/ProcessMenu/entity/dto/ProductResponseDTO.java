@@ -1,4 +1,4 @@
-package com.ae.tech.ProcessMenu.entity.DTO;
+package com.ae.tech.ProcessMenu.entity.dto;
 
 public record ProductResponseDTO(String title, String description, int qtd_itens,
 		String observation, double preco, String tempo_espera, 

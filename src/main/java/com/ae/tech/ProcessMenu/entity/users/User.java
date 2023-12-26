@@ -33,7 +33,7 @@ public class User implements UserDetails {
 
 	private String phoneNumber;
 
-	private String DDD;
+	private String ddd;
 
 	private UserRole role;
 
@@ -44,6 +44,8 @@ public class User implements UserDetails {
 	private Boolean termsService;
 
 	private String newPassword;
+
+	private String token;
 
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -58,15 +60,16 @@ public class User implements UserDetails {
 	}
 
 	public User(String email, String password, String cpf, String birthday, String firstName, String lastName,
-			String phoneNumber, String DDD, UserRole role, AddressUser addressUser, Boolean ativo,
+			String phoneNumber, String ddd, UserRole role, AddressUser addressUser, Boolean ativo,
 			Boolean termsService) {
 		this.email = email;
 		this.password = password;
+		this.cpf = cpf;
 		this.birthday = birthday;
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.phoneNumber = phoneNumber;
-		this.DDD = DDD;
+		this.ddd = ddd;
 		this.role = role;
 		this.addressUser = addressUser;
 		this.ativo = ativo;
@@ -74,14 +77,17 @@ public class User implements UserDetails {
 	}
 
 	public User() {
+	}
 
+	public User(String token) {
+		this.token = token;
 	}
 
 	@Override
 	public String toString() {
 		return "User [id=" + id + ", email=" + email + ", password=" + password + ", cpf=" + cpf + ", birthday="
 				+ birthday + ", firstName=" + firstName + ", lastName=" + lastName + ", phoneNumber=" + phoneNumber
-				+ ", DDD=" + DDD + ", role=" + role + ", addressUser=" + addressUser + ", ativo=" + ativo
+				+ ", DDD=" + ddd + ", role=" + role + ", addressUser=" + addressUser + ", ativo=" + ativo
 				+ ", termsService=" + termsService + "]";
 	}
 
@@ -162,11 +168,11 @@ public class User implements UserDetails {
 	}
 
 	public String getDDD() {
-		return DDD;
+		return ddd;
 	}
 
-	public void setDDD(String dDD) {
-		DDD = dDD;
+	public void setDDD(String ddd) {
+		this.ddd = ddd;
 	}
 
 	public Boolean getAtivo() {
@@ -191,6 +197,14 @@ public class User implements UserDetails {
 
 	public void setNewPassword(String newPassword) {
 		this.newPassword = newPassword;
+	}
+
+	public String getToken() {
+		return token;
+	}
+
+	public void setToken(String token) {
+		this.token = token;
 	}
 
 	@Override

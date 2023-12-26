@@ -29,7 +29,7 @@ public class SecurytiConfiguration {
 						.requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
 						.requestMatchers(HttpMethod.GET, "/auth/users/{id}").hasRole("USER")
 						.requestMatchers(HttpMethod.PATCH, "/auth/usersPass/{id}").hasRole("USER")
-						.requestMatchers(HttpMethod.PUT, "/auth/update/{id}").hasRole("USER")
+						.requestMatchers(HttpMethod.PUT, "/auth/updateUser/{id}").hasRole("USER")
 //						Desnecessario
 						.requestMatchers(HttpMethod.GET, "/auth/logout").hasRole("USER")
 

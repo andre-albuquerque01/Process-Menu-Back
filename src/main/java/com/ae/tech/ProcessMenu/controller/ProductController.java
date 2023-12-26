@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.ae.tech.ProcessMenu.entity.DTO.ProductResponseDTO;
+import com.ae.tech.ProcessMenu.entity.dto.ProductResponseDTO;
 import com.ae.tech.ProcessMenu.entity.product.ImageProduct;
 import com.ae.tech.ProcessMenu.entity.product.Product;
 import com.ae.tech.ProcessMenu.repositorio.ImageProductRepository;

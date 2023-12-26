@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.ae.tech.ProcessMenu.entity.DTO.OrderResponseDTO;
+import com.ae.tech.ProcessMenu.entity.dto.OrderResponseDTO;
 import com.ae.tech.ProcessMenu.entity.product.Order;
 import com.ae.tech.ProcessMenu.entity.product.Product;
 import com.ae.tech.ProcessMenu.repositorio.OrderRepository;

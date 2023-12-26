@@ -21,11 +21,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.ae.tech.ProcessMenu.entity.DTO.AuthenticationDTO;
-import com.ae.tech.ProcessMenu.entity.DTO.LoginResponseDTO;
-import com.ae.tech.ProcessMenu.entity.DTO.RegisterDTO;
+import com.ae.tech.ProcessMenu.entity.dto.AuthenticationDTO;
+import com.ae.tech.ProcessMenu.entity.dto.LoginResponseDTO;
+import com.ae.tech.ProcessMenu.entity.dto.RegisterDTO;
 import com.ae.tech.ProcessMenu.entity.users.AddressUser;
 import com.ae.tech.ProcessMenu.entity.users.User;
+import com.ae.tech.ProcessMenu.entity.users.UserRole;
 import com.ae.tech.ProcessMenu.infra.security.TokenService;
 import com.ae.tech.ProcessMenu.repositorio.AddressUserRepository;
 import com.ae.tech.ProcessMenu.repositorio.UserRepository;
@@ -63,8 +64,10 @@ public class AuthenticationController {
 			var usernamePassword = new UsernamePasswordAuthenticationToken(data.email(), data.password());
 			var auth = this.authenticationManager.authenticate(usernamePassword);
 			var token = tokenService.generateToken((User) auth.getPrincipal());
-			var id = ((User) auth.getPrincipal()).getId().toString();
-			return ResponseEntity.ok(new LoginResponseDTO(token, id));
+			var user = ((User) auth.getPrincipal());
+			user.setToken(token);
+			this.userRepository.save(user);
+			return ResponseEntity.ok(new LoginResponseDTO(token, user.getId().toString()));
 		} catch (Exception e) {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 		}
@@ -73,18 +76,19 @@ public class AuthenticationController {
 	@PostMapping("/register")
 	public ResponseEntity<User> register(@RequestBody @Valid RegisterDTO data) {
 		try {
-			if (this.userRepository.findByEmail(data.email()) != null)
+			if (this.userRepository.findByEmail(data.email()) != null || !data.password().equals(data.confirmpassword()))
 				return ResponseEntity.badRequest().build();
 
-			String encrytedPassword = new BCryptPasswordEncoder().encode(data.password());
-			User newUser = new User(data.email(), encrytedPassword, data.cpf(), data.birthday(), data.firstName(),
-					data.lastName(), data.phoneNumber(), data.DDD(), data.role(), data.addressUser(), data.ativo(),
-					data.termsService());
-			this.addressUserRepository.save(data.addressUser());
-			newUser.setAddressUser(data.addressUser());
-			this.userRepository.save(newUser);
+			var role = UserRole.USER;
+				String encrytedPassword = new BCryptPasswordEncoder().encode(data.password());
+				User newUser = new User(data.email(), encrytedPassword, data.cpf(), data.birthday(), data.firstName(),
+						data.lastName(), data.phoneNumber(), data.ddd(), role, data.addressUser(), true,
+						data.termsService());
+				this.addressUserRepository.save(data.addressUser());
+				newUser.setAddressUser(data.addressUser());
+				this.userRepository.save(newUser);
 
-			return ResponseEntity.ok().build();
+				return ResponseEntity.ok().build();
 		} catch (Exception e) {
 			e.printStackTrace();
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
@@ -134,52 +138,54 @@ public class AuthenticationController {
 		}
 	}
 
-	@PutMapping("/update/{id}")
-	public ResponseEntity<User> updateUser(@PathVariable(value = "id") String id, @Valid @RequestBody User data) {
+	@PutMapping("/updateUser/{id}")
+	public ResponseEntity<User> updateUser(@PathVariable(value = "id") String id, @Valid @RequestBody RegisterDTO data) {
 		try {
 			Optional<User> userData = userRepository.findById(id);
 			if (userData.isEmpty()) {
 				return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 			}
-			String encrytedPassword = new BCryptPasswordEncoder().encode(data.getPassword());
+			String encrytedPassword = new BCryptPasswordEncoder().encode(data.password());
 			User _User = userData.get();
-			if (_User.getAtivo() && new BCryptPasswordEncoder().matches(data.getPassword(), _User.getPassword())) {
-				_User.setFirstName(data.getFirstName());
-				_User.setLastName(data.getLastName());
-				_User.setEmail(data.getEmail());
+			if (_User.getAtivo() ) {
+				_User.setFirstName(data.firstName());
+				_User.setLastName(data.firstName());
+				_User.setEmail(data.email());
 				_User.setPassword(encrytedPassword);
-				_User.setBirthday(data.getBirthday());
-				_User.setCpf(data.getCpf());
-				_User.setDDD(data.getDDD());
-				_User.setPhoneNumber(data.getPhoneNumber());
+				_User.setBirthday(data.birthday());
+				_User.setCpf(data.cpf());
+				_User.setDDD(data.ddd());
+				_User.setPhoneNumber(data.phoneNumber());
 				_User.setAddressUser(new AddressUser());
 				AddressUser userAddress = _User.getAddressUser();
-				userAddress.setCep(data.getAddressUser().getCep());
-				userAddress.setLogradouro(data.getAddressUser().getLogradouro());
-				userAddress.setBairro(data.getAddressUser().getBairro());
-				userAddress.setUf(data.getAddressUser().getUf());
-				userAddress.setComplemento(data.getAddressUser().getComplemento());
+				userAddress.setCep(data.addressUser().getCep());
+				userAddress.setLogradouro(data.addressUser().getLogradouro());
+				userAddress.setBairro(data.addressUser().getBairro());
+				userAddress.setUf(data.addressUser().getUf());
+				userAddress.setComplemento(data.addressUser().getComplemento());
 				_User = userRepository.save(_User);
 				return ResponseEntity.ok().build();
 			} else {
-				return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+				return new ResponseEntity<>(HttpStatus.FORBIDDEN);
 			}
 		} catch (Exception e) {
+			System.out.println(data);
 			e.printStackTrace();
-			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 		}
 	}
-	
+
 	@PatchMapping("/usersPass/{id}")
-	public ResponseEntity<User> updateUserPassword(@PathVariable(value = "id") String id, @Valid @RequestBody User data) {
+	public ResponseEntity<User> updateUserPassword(@PathVariable(value = "id") String id,
+			@Valid @RequestBody RegisterDTO data) {
 		try {
 			Optional<User> userData = userRepository.findById(id);
 			if (userData.isEmpty()) {
 				return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 			}
-			String encrytedNewPassword = new BCryptPasswordEncoder().encode(data.getNewPassword());
+			String encrytedNewPassword = new BCryptPasswordEncoder().encode(data.confirmpassword());
 			User _User = userData.get();
-			if (_User.getAtivo() && new BCryptPasswordEncoder().matches(data.getPassword(), _User.getPassword())) {
+			if (_User.getAtivo() && new BCryptPasswordEncoder().matches(data.password(), _User.getPassword())) {
 				_User.setPassword(encrytedNewPassword);
 				_User = userRepository.save(_User);
 				return ResponseEntity.ok().build();

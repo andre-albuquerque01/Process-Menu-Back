@@ -1,4 +1,4 @@
-package com.ae.tech.ProcessMenu.entity.DTO;
+package com.ae.tech.ProcessMenu.entity.dto;
 
 import java.util.List;
 
