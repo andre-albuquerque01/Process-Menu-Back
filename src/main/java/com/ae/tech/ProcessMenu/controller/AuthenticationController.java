@@ -69,29 +69,30 @@ public class AuthenticationController {
 			this.userRepository.save(user);
 			return ResponseEntity.ok(new LoginResponseDTO(token, user.getId().toString()));
 		} catch (Exception e) {
-			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 		}
 	}
 
 	@PostMapping("/register")
 	public ResponseEntity<User> register(@RequestBody @Valid RegisterDTO data) {
 		try {
-			if (this.userRepository.findByEmail(data.email()) != null || !data.password().equals(data.confirmpassword()))
+			if (this.userRepository.findByEmail(data.email()) != null
+					|| !data.password().equals(data.confirmpassword()))
 				return ResponseEntity.badRequest().build();
 
 			var role = UserRole.USER;
-				String encrytedPassword = new BCryptPasswordEncoder().encode(data.password());
-				User newUser = new User(data.email(), encrytedPassword, data.cpf(), data.birthday(), data.firstName(),
-						data.lastName(), data.phoneNumber(), data.ddd(), role, data.addressUser(), true,
-						data.termsService());
-				this.addressUserRepository.save(data.addressUser());
-				newUser.setAddressUser(data.addressUser());
-				this.userRepository.save(newUser);
+			String encrytedPassword = new BCryptPasswordEncoder().encode(data.password());
+			User newUser = new User(data.email(), encrytedPassword, data.cpf(), data.birthday(), data.firstName(),
+					data.lastName(), data.phoneNumber(), data.ddd(), role, data.addressUser(), true,
+					data.termsService());
+			this.addressUserRepository.save(data.addressUser());
+			newUser.setAddressUser(data.addressUser());
+			this.userRepository.save(newUser);
 
-				return ResponseEntity.ok().build();
+			return ResponseEntity.ok().build();
 		} catch (Exception e) {
 			e.printStackTrace();
-			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 		}
 	}
 
@@ -119,7 +120,7 @@ public class AuthenticationController {
 			return ResponseEntity.ok().build();
 		} catch (Exception e) {
 			e.printStackTrace();
-			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 		}
 	}
 
@@ -134,12 +135,13 @@ public class AuthenticationController {
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
-			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 		}
 	}
 
 	@PutMapping("/updateUser/{id}")
-	public ResponseEntity<User> updateUser(@PathVariable(value = "id") String id, @Valid @RequestBody RegisterDTO data) {
+	public ResponseEntity<User> updateUser(@PathVariable(value = "id") String id,
+			@Valid @RequestBody RegisterDTO data) {
 		try {
 			Optional<User> userData = userRepository.findById(id);
 			if (userData.isEmpty()) {
@@ -147,11 +149,11 @@ public class AuthenticationController {
 			}
 			String encrytedPassword = new BCryptPasswordEncoder().encode(data.password());
 			User _User = userData.get();
-			if (_User.getAtivo() ) {
+			if (_User.getAtivo() && new BCryptPasswordEncoder().matches(encrytedPassword, _User.getPassword())
+					&& _User.getToken().equals(data.token())) {
 				_User.setFirstName(data.firstName());
 				_User.setLastName(data.firstName());
 				_User.setEmail(data.email());
-				_User.setPassword(encrytedPassword);
 				_User.setBirthday(data.birthday());
 				_User.setCpf(data.cpf());
 				_User.setDDD(data.ddd());
@@ -194,7 +196,7 @@ public class AuthenticationController {
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
-			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 		}
 	}
 

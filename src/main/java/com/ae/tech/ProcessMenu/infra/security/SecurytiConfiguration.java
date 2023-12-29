@@ -34,8 +34,9 @@ public class SecurytiConfiguration {
 						.requestMatchers(HttpMethod.GET, "/auth/logout").hasRole("USER")
 
 						.requestMatchers(HttpMethod.GET, "/product/").permitAll()
-						.requestMatchers(HttpMethod.GET, "/product/searchProduct/{name}").permitAll()
+						.requestMatchers(HttpMethod.GET, "/product/searchProduct/{title}").permitAll()
 						.requestMatchers(HttpMethod.GET, "/product/searchCategory/{category}").permitAll()
+						.requestMatchers(HttpMethod.GET, "/product/findProduct/{id}").permitAll()
 						.requestMatchers(HttpMethod.POST, "/product/register").hasRole("ADMIN")
 						.requestMatchers(HttpMethod.POST, "/product/register/image").hasRole("ADMIN")
 						.requestMatchers(HttpMethod.PUT, "/product/update/image/{id}").hasRole("ADMIN")

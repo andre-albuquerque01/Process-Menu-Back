@@ -11,21 +11,21 @@ public class Product {
 
 	private String title;
 
+	private String subTitle;
+
 	private String description;
 
 	private int qtd_itens;
 
 	private String observation;
 
-	private double preco;
+	private double price;
 
-	private String tempo_espera;
+	private String waitTime;
 
 	private boolean status;
 
 	private String file_name;
-
-	private String idImage;
 
 	private String categorie;
 
@@ -37,26 +37,26 @@ public class Product {
 	public Product() {
 	}
 
-	public Product(String title, String description, int qtd_itens, String observation, double preco,
-			String tempo_espera, boolean status, String file_name, String idImage, String categorie, String position) {
+	public Product(String title, String subTitle, String description, int qtd_itens, String observation, double price,
+			String waitTime, boolean status, String file_name, String categorie, String position) {
 		this.title = title;
+		this.subTitle = subTitle;
 		this.description = description;
 		this.qtd_itens = qtd_itens;
 		this.observation = observation;
-		this.preco = preco;
-		this.tempo_espera = tempo_espera;
+		this.price = price;
+		this.waitTime = waitTime;
 		this.status = status;
 		this.file_name = file_name;
-		this.idImage = idImage;
 		this.categorie = categorie;
 		this.position = position;
 	}
 
 	@Override
 	public String toString() {
-		return "Product [id=" + id + ", title=" + title + ", description=" + description + ", qtd_itens=" + qtd_itens
-				+ ", observation=" + observation + ", preco=" + preco + ", tempo_espera=" + tempo_espera + ", status="
-				+ status + ", file_name=" + file_name + ", idImage=" + idImage + ", categorie=" + categorie + ", like="
+		return "Product [id=" + id + ", title=" + title + ", subTitle=" + subTitle + ", description=" + description
+				+ ", qtd_itens=" + qtd_itens + ", observation=" + observation + ", price=" + price + ", waitTime="
+				+ waitTime + ", status=" + status + ", file_name=" + file_name + ", categorie=" + categorie + ", like="
 				+ like + ", position=" + position + "]";
 	}
 
@@ -74,6 +74,14 @@ public class Product {
 
 	public void setTitle(String title) {
 		this.title = title;
+	}
+
+	public String getSubTitle() {
+		return subTitle;
+	}
+
+	public void setSubTitle(String subTitle) {
+		this.subTitle = subTitle;
 	}
 
 	public String getDescription() {
@@ -100,20 +108,20 @@ public class Product {
 		this.observation = observation;
 	}
 
-	public double getPreco() {
-		return preco;
+	public double getPrice() {
+		return price;
 	}
 
-	public void setPreco(double preco) {
-		this.preco = preco;
+	public void setPrice(double price) {
+		this.price = price;
 	}
 
-	public String getTempo_espera() {
-		return tempo_espera;
+	public String getWaitTime() {
+		return waitTime;
 	}
 
-	public void setTempo_espera(String tempo_espera) {
-		this.tempo_espera = tempo_espera;
+	public void setWaitTime(String waitTime) {
+		this.waitTime = waitTime;
 	}
 
 	public boolean isStatus() {
@@ -154,14 +162,6 @@ public class Product {
 
 	public void setPosition(String position) {
 		this.position = position;
-	}
-
-	public String getIdImage() {
-		return idImage;
-	}
-
-	public void setIdImage(String idImage) {
-		this.idImage = idImage;
 	}
 
 }

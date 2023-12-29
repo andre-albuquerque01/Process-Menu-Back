@@ -6,6 +6,7 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -56,10 +57,10 @@ public class ProductController {
 		}
 	}
 
-	@GetMapping("/searchProduct/{name}")
-	public ResponseEntity<List<Product>> getNameProduct(@PathVariable(value = "name") String name) {
+	@GetMapping("/searchProduct/{title}")
+	public ResponseEntity<List<Product>> getNameProduct(@PathVariable(value = "title") String title) {
 		try {
-			List<Product> listTitle = productRepository.findByTitle(name);
+			List<Product> listTitle = productRepository.findByTitle(title);
 			if (listTitle.isEmpty()) {
 				return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 			} else {
@@ -86,15 +87,28 @@ public class ProductController {
 		}
 	}
 
+	@GetMapping("/findProduct/{id}")
+	public ResponseEntity<Product> getProduct(@PathVariable(value = "id") String id) {
+		try {
+			Optional<Product> list = productRepository.findById(id);
+			if (list.isEmpty()) {
+				return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+			} else {
+				return new ResponseEntity<>(list.get(), HttpStatus.OK);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
 	@PostMapping("/register")
 	public ResponseEntity<Product> createProduct(@RequestBody @Valid ProductResponseDTO data) throws IOException {
 		try {
-			String file = imageService.getFileName();
-			String fileId = imageService.getFileId();
-			if (file.isEmpty())
+			if (data == null)
 				return ResponseEntity.badRequest().build();
-			Product _product = new Product(data.title(), data.description(), data.qtd_itens(), data.observation(),
-					data.preco(), data.tempo_espera(), data.status(), file, fileId, data.categorie(), data.position());
+			Product _product = new Product(data.title(), data.subTitle(), data.description(), data.qtd_itens(), data.observation(),
+					data.price(), data.waitTime(), true, data.file_name(), data.categorie(), data.position());
 			imageService.setFileName("");
 			imageService.setFileId("");
 			Product savedProduct = this.productRepository.save(_product);
@@ -108,6 +122,9 @@ public class ProductController {
 	@PostMapping("/register/image")
 	public ResponseEntity<ImageProduct> createImage(@RequestBody MultipartFile file) throws IOException {
 		try {
+			if (file == null)
+				return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+			System.out.println(file);
 			var saveImage = imageService.saveImageToStorage(file);
 			ImageProduct _image = new ImageProduct(saveImage);
 			ImageProduct savedImageProduct = this.imageProductRepository.save(_image);
@@ -132,10 +149,10 @@ public class ProductController {
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
-			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 		}
 	}
-	
+
 	@PatchMapping("/update/qtd/{id}")
 	public ResponseEntity<Product> updateQtd(@PathVariable(value = "id") String id, @Valid @RequestParam Integer qtd) {
 		try {
@@ -149,10 +166,9 @@ public class ProductController {
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
-			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 		}
 	}
-
 
 	@PutMapping("/update/image/{id}")
 	public ResponseEntity<ImageProduct> updateImage(@PathVariable(value = "id") String id,
@@ -180,34 +196,31 @@ public class ProductController {
 	public ResponseEntity<Product> updateProduct(@PathVariable(value = "id") String id,
 			@Valid @RequestBody Product data) {
 		try {
-			String file = imageService.getFileName();
-			String idImage = imageService.getFileId();
-			if (file.isEmpty()) {
+			Optional<Product> productData = productRepository.findById(id);
+			if (productData.isEmpty()) {
 				return ResponseEntity.badRequest().build();
 			}
-			Optional<Product> productData = productRepository.findById(id);
-			if (productData.isPresent() && !file.isEmpty()) {
-				Product _Product = productData.get();
+			Product _Product = productData.get();
+			if (productData.isPresent()) {
 				_Product.setTitle(data.getTitle());
+				_Product.setSubTitle(data.getSubTitle());
 				_Product.setDescription(data.getDescription());
 				_Product.setQtd_itens(data.getQtd_itens());
 				_Product.setObservation(data.getObservation());
-				_Product.setPreco(data.getPreco());
-				_Product.setTempo_espera(data.getTempo_espera());
+				_Product.setPrice(data.getPrice());
+				_Product.setWaitTime(data.getWaitTime());
 				_Product.setStatus(data.isStatus());
-				_Product.setFile_name(file);
-				_Product.setIdImage(idImage);
+				_Product.setFile_name(data.getFile_name());
 				_Product.setCategorie(data.getCategorie());
 				_Product.setPosition(data.getPosition());
-				imageService.setFileName("");
-				imageService.setFileId("");
+				_Product = productRepository.save(_Product);
 				return ResponseEntity.ok().build();
 			} else {
 				return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
-			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 		}
 	}
 
