@@ -21,7 +21,7 @@ public class Product {
 
 	private double price;
 
-	private String waitTime;
+	private int waitTime;
 
 	private boolean status;
 
@@ -38,7 +38,7 @@ public class Product {
 	}
 
 	public Product(String title, String subTitle, String description, int qtd_itens, String observation, double price,
-			String waitTime, boolean status, String file_name, String categorie, String position) {
+			int waitTime, boolean status, String file_name, String categorie, String position) {
 		this.title = title;
 		this.subTitle = subTitle;
 		this.description = description;
@@ -116,11 +116,11 @@ public class Product {
 		this.price = price;
 	}
 
-	public String getWaitTime() {
+	public int getWaitTime() {
 		return waitTime;
 	}
 
-	public void setWaitTime(String waitTime) {
+	public void setWaitTime(int waitTime) {
 		this.waitTime = waitTime;
 	}
 

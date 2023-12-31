@@ -30,16 +30,18 @@ public class Order {
 
 	private String nfe;
 
-	private String dateOrder;
-
 	private double tip;
+
+	private String create_at;
+
+	private String update_at;
 
 	public Order() {
 	}
 
 	public Order(List<OrderProducts> products, String numberOrder, String idUser, String formPay, String qtdItens,
-			String table, double precoTotal, String status, double impostoTributos, String nfe, String dateOrder,
-			double tip) {
+			String table, double precoTotal, String status, double impostoTributos, String nfe, double tip,
+			String create_at, String update_at) {
 		this.products = products;
 		this.numberOrder = numberOrder;
 		this.idUser = idUser;
@@ -50,7 +52,8 @@ public class Order {
 		this.status = status;
 		this.impostoTributos = impostoTributos;
 		this.nfe = nfe;
-		this.dateOrder = dateOrder;
+		this.create_at = create_at;
+		this.update_at = update_at;
 		this.tip = tip;
 	}
 
@@ -142,14 +145,6 @@ public class Order {
 		this.nfe = nfe;
 	}
 
-	public String getDateOrder() {
-		return dateOrder;
-	}
-
-	public void setDateOrder(String dateOrder) {
-		this.dateOrder = dateOrder;
-	}
-
 	public double getTip() {
 		return tip;
 	}
@@ -158,12 +153,28 @@ public class Order {
 		this.tip = tip;
 	}
 
+	public String getCreate_at() {
+		return create_at;
+	}
+
+	public void setCreate_at(String create_at) {
+		this.create_at = create_at;
+	}
+
+	public String getUpdate_at() {
+		return update_at;
+	}
+
+	public void setUpdate_at(String update_at) {
+		this.update_at = update_at;
+	}
+
 	@Override
 	public String toString() {
 		return "Order [id=" + id + ", products=" + products + ", numberOrder=" + numberOrder + ", idUser=" + idUser
 				+ ", formPay=" + formPay + ", qtdItens=" + qtdItens + ", table=" + table + ", precoTotal=" + precoTotal
-				+ ", status=" + status + ", impostoTributos=" + impostoTributos + ", nfe=" + nfe + ", dateOrder="
-				+ dateOrder + ", tip=" + tip + "]";
+				+ ", status=" + status + ", impostoTributos=" + impostoTributos + ", nfe=" + nfe + ", tip=" + tip
+				+ ", create_at=" + create_at + ", update_at=" + update_at + "]";
 	}
 
 }

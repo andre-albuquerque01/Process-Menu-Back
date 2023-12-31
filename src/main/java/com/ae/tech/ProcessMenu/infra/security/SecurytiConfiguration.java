@@ -47,6 +47,7 @@ public class SecurytiConfiguration {
 
 						.requestMatchers(HttpMethod.GET, "/order/orders").hasRole("FUNCIONARIO")
 						.requestMatchers(HttpMethod.GET, "/order/{id}").hasRole("USER")
+						.requestMatchers(HttpMethod.GET, "/order/userId/{id}").hasRole("USER")
 						.requestMatchers(HttpMethod.GET, "/order/searchOrder/{number}").hasRole("USER")
 						.requestMatchers(HttpMethod.POST, "/order/register").hasRole("USER")
 						.requestMatchers(HttpMethod.PUT, "/order/update/{id}").hasRole("FUNCIONARIO")

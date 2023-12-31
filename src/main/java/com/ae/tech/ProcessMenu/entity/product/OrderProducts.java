@@ -8,9 +8,9 @@ public class OrderProducts {
 
 	private String observation;
 
-	private double preco;
+	private double price;
 
-	private String tempo_espera;
+	private String waitTime;
 
 	private String file_name;
 
@@ -19,21 +19,21 @@ public class OrderProducts {
 	public OrderProducts() {
 	}
 
-	public OrderProducts(String id, String title, String observation, double preco, String tempo_espera,
-			String file_name, int qtd_itens) {
+	public OrderProducts(String id, String title, String observation, double price, String waitTime, String file_name,
+			int qtd_itens) {
 		this.id = id;
 		this.title = title;
 		this.observation = observation;
-		this.preco = preco;
-		this.tempo_espera = tempo_espera;
+		this.price = price;
+		this.waitTime = waitTime;
 		this.file_name = file_name;
 		this.qtd_itens = qtd_itens;
 	}
 
 	@Override
 	public String toString() {
-		return "OrderProducts [id=" + id + ", title=" + title + ", observation=" + observation + ", preco=" + preco
-				+ ", tempo_espera=" + tempo_espera + ", file_name=" + file_name + ", qtd_itens=" + qtd_itens + "]";
+		return "OrderProducts [id=" + id + ", title=" + title + ", observation=" + observation + ", price=" + price
+				+ ", waitTime=" + waitTime + ", file_name=" + file_name + ", qtd_itens=" + qtd_itens + "]";
 	}
 
 	public int getQtd_itens() {
@@ -68,20 +68,20 @@ public class OrderProducts {
 		this.observation = observation;
 	}
 
-	public double getPreco() {
-		return preco;
+	public double getPrice() {
+		return price;
 	}
 
-	public void setPreco(double preco) {
-		this.preco = preco;
+	public void setPrice(double price) {
+		this.price = price;
 	}
 
-	public String getTempo_espera() {
-		return tempo_espera;
+	public String getWaitTime() {
+		return waitTime;
 	}
 
-	public void setTempo_espera(String tempo_espera) {
-		this.tempo_espera = tempo_espera;
+	public void setWaitTime(String waitTime) {
+		this.waitTime = waitTime;
 	}
 
 	public String getFile_name() {

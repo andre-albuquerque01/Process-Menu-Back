@@ -26,6 +26,7 @@ import com.ae.tech.ProcessMenu.entity.product.Product;
 import com.ae.tech.ProcessMenu.repositorio.ImageProductRepository;
 import com.ae.tech.ProcessMenu.repositorio.ProductRepository;
 import com.ae.tech.ProcessMenu.services.ImageService;
+import com.ae.tech.ProcessMenu.services.ProductService;
 
 import jakarta.validation.Valid;
 
@@ -41,6 +42,9 @@ public class ProductController {
 
 	@Autowired
 	private ImageProductRepository imageProductRepository;
+	
+	@Autowired
+	private ProductService productService;
 
 	@GetMapping("/")
 	public ResponseEntity<List<Product>> getAllProduct() {
@@ -103,16 +107,10 @@ public class ProductController {
 	}
 
 	@PostMapping("/register")
-	public ResponseEntity<Product> createProduct(@RequestBody @Valid ProductResponseDTO data) throws IOException {
+	public ResponseEntity<Product> registerProduct(@RequestBody @Valid ProductResponseDTO data) throws IOException {
 		try {
-			if (data == null)
-				return ResponseEntity.badRequest().build();
-			Product _product = new Product(data.title(), data.subTitle(), data.description(), data.qtd_itens(), data.observation(),
-					data.price(), data.waitTime(), true, data.file_name(), data.categorie(), data.position());
-			imageService.setFileName("");
-			imageService.setFileId("");
-			Product savedProduct = this.productRepository.save(_product);
-			return ResponseEntity.ok(savedProduct);
+			productService.registerProduct(data);
+			return new ResponseEntity<>(null, HttpStatus.OK);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -139,14 +137,8 @@ public class ProductController {
 	@PatchMapping("/like/{id}")
 	public ResponseEntity<Product> updateLike(@PathVariable(value = "id") String id, @Valid @RequestParam String like) {
 		try {
-			Optional<Product> productData = productRepository.findById(id);
-			if (productData.isPresent()) {
-				Product _Product = productData.get();
-				_Product.setLike(like);
-				return new ResponseEntity<>(productRepository.save(_Product), HttpStatus.OK);
-			} else {
-				return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-			}
+			productService.updateLike(id, like);
+			return new ResponseEntity<>(null, HttpStatus.OK);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
@@ -156,14 +148,8 @@ public class ProductController {
 	@PatchMapping("/update/qtd/{id}")
 	public ResponseEntity<Product> updateQtd(@PathVariable(value = "id") String id, @Valid @RequestParam Integer qtd) {
 		try {
-			Optional<Product> productData = productRepository.findById(id);
-			if (productData.isPresent()) {
-				Product _Product = productData.get();
-				_Product.setQtd_itens(qtd);
-				return new ResponseEntity<>(productRepository.save(_Product), HttpStatus.OK);
-			} else {
-				return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-			}
+			productService.updateQtd(id, qtd);
+			return new ResponseEntity<>(null, HttpStatus.OK);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
@@ -196,28 +182,8 @@ public class ProductController {
 	public ResponseEntity<Product> updateProduct(@PathVariable(value = "id") String id,
 			@Valid @RequestBody Product data) {
 		try {
-			Optional<Product> productData = productRepository.findById(id);
-			if (productData.isEmpty()) {
-				return ResponseEntity.badRequest().build();
-			}
-			Product _Product = productData.get();
-			if (productData.isPresent()) {
-				_Product.setTitle(data.getTitle());
-				_Product.setSubTitle(data.getSubTitle());
-				_Product.setDescription(data.getDescription());
-				_Product.setQtd_itens(data.getQtd_itens());
-				_Product.setObservation(data.getObservation());
-				_Product.setPrice(data.getPrice());
-				_Product.setWaitTime(data.getWaitTime());
-				_Product.setStatus(data.isStatus());
-				_Product.setFile_name(data.getFile_name());
-				_Product.setCategorie(data.getCategorie());
-				_Product.setPosition(data.getPosition());
-				_Product = productRepository.save(_Product);
-				return ResponseEntity.ok().build();
-			} else {
-				return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-			}
+			productService.updateProduct(id, data);
+			return new ResponseEntity<>(null, HttpStatus.OK);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
