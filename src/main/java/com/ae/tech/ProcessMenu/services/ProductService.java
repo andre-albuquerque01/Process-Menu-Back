@@ -58,6 +58,18 @@ public class ProductService {
 		}
 		Product _Product = productData.get();
 		_Product.setLike(like);
+		_Product = productRepository.save(_Product);
+		return _Product;
+	}
+	
+	public Product updateStatus(String id) throws Exception {
+		Optional<Product> productData = productRepository.findById(id);
+		if (productData.isEmpty()) {
+			throw new Exception("Produto não localizado");
+		}
+		Product _Product = productData.get();
+		_Product.setStatus(false);
+		_Product = productRepository.save(_Product);
 		return _Product;
 	}
 	
@@ -68,6 +80,7 @@ public class ProductService {
 		}
 		Product _Product = productData.get();
 		_Product.setQtd_itens(qtd);
+		_Product = productRepository.save(_Product);
 		return _Product;
 	}
 }

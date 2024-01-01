@@ -27,7 +27,7 @@ public class OrderService {
 			throw new Exception("Erro na geração do número ou usuário não listado");
 
 		Order _order = new Order(data.products(), numberOrder, data.idUser(), data.formPay(), data.qtdItens(),
-				data.table(), data.precoTotal(), data.status(), data.impostoTributos(), data.nfe(), data.tip(),
+				data.table(), data.precoTotal(), "Aberto", data.impostoTributos(), data.nfe(), data.tip(),
 				data.create_at(), data.update_at());
 		Order saveorder = this.orderRepository.save(_order);
 	}

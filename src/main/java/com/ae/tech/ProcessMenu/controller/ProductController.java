@@ -134,17 +134,6 @@ public class ProductController {
 		}
 	}
 
-	@PatchMapping("/like/{id}")
-	public ResponseEntity<Product> updateLike(@PathVariable(value = "id") String id, @Valid @RequestParam String like) {
-		try {
-			productService.updateLike(id, like);
-			return new ResponseEntity<>(null, HttpStatus.OK);
-		} catch (Exception e) {
-			e.printStackTrace();
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-		}
-	}
-
 	@PatchMapping("/update/qtd/{id}")
 	public ResponseEntity<Product> updateQtd(@PathVariable(value = "id") String id, @Valid @RequestParam Integer qtd) {
 		try {
@@ -183,6 +172,28 @@ public class ProductController {
 			@Valid @RequestBody Product data) {
 		try {
 			productService.updateProduct(id, data);
+			return new ResponseEntity<>(null, HttpStatus.OK);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+		}
+	}
+	
+	@PatchMapping("/like/{id}")
+	public ResponseEntity<Product> updateLike(@PathVariable(value = "id") String id, @Valid @RequestParam String like) {
+		try {
+			productService.updateLike(id, like);
+			return new ResponseEntity<>(null, HttpStatus.OK);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+		}
+	}
+	
+	@PatchMapping("/updateStatus/{id}")
+	public ResponseEntity<Product> updateStatus(@PathVariable(value = "id") String id) {
+		try {
+			productService.updateStatus(id);
 			return new ResponseEntity<>(null, HttpStatus.OK);
 		} catch (Exception e) {
 			e.printStackTrace();

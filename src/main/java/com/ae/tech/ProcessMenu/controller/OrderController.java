@@ -18,11 +18,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.ae.tech.ProcessMenu.entity.dto.OrderResponseDTO;
 import com.ae.tech.ProcessMenu.entity.product.Order;
-import com.ae.tech.ProcessMenu.entity.users.User;
 import com.ae.tech.ProcessMenu.repositorio.OrderRepository;
-import com.ae.tech.ProcessMenu.repositorio.UserRepository;
 import com.ae.tech.ProcessMenu.services.OrderService;
-import com.ae.tech.ProcessMenu.services.RandomService;
 
 import jakarta.validation.Valid;
 
@@ -122,12 +119,18 @@ public class OrderController {
 	}
 
 	@PatchMapping("/updateStatus/{id}")
-	public ResponseEntity<Order> updateStatus(@PathVariable(value = "id") String id, @Valid @RequestBody Order data) {
-		Optional<Order> orderData = orderRepository.findById(id);
+	public ResponseEntity<Order> updateStatus(@PathVariable(value = "id") String id, @Valid @RequestBody OrderResponseDTO data) {
+		System.out.println(data);
+		System.out.println(id);
 		try {
-			Order _order = orderData.get();
-			_order.setStatus(data.getStatus());
-			return new ResponseEntity<>(orderRepository.save(_order), HttpStatus.OK);
+			Optional<Order> orderData = orderRepository.findById(id);
+			if (orderData.isPresent()) {
+				Order _order = orderData.get();
+				_order.setStatus(data.stats());
+				_order.setUpdate_at(data.update_at());
+				return new ResponseEntity<>(orderRepository.save(_order), HttpStatus.OK);
+			}
+			return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();

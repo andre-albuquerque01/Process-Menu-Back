@@ -50,8 +50,8 @@ public class User implements UserDetails {
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
 		// TODO Auto-generated method stub
-		if (this.role == UserRole.ADMIN)
-			return List.of(new SimpleGrantedAuthority("ROLE_ADMIN"), new SimpleGrantedAuthority("ROLE_USER"),
+		if (this.role == UserRole.SUPERADM)
+			return List.of(new SimpleGrantedAuthority("ROLE_SUPERADM"), new SimpleGrantedAuthority("ROLE_USER"),
 					new SimpleGrantedAuthority("ROLE_FUNCIONARIO"));
 		else if (this.role == UserRole.FUNCIONARIO)
 			return List.of(new SimpleGrantedAuthority("ROLE_USER"), new SimpleGrantedAuthority("ROLE_FUNCIONARIO"));

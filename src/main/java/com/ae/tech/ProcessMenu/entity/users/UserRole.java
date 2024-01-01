@@ -1,7 +1,7 @@
 package com.ae.tech.ProcessMenu.entity.users;
 
 public enum UserRole {
-	ADMIN("admin"), USER("user"), FUNCIONARIO("funcionario");
+	SUPERADM("superadm"), USER("user"), FUNCIONARIO("funcionario");
 
 	private String role;
 

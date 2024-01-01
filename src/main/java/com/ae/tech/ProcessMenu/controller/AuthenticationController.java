@@ -1,6 +1,5 @@
 package com.ae.tech.ProcessMenu.controller;
 
-import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,9 +8,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -25,14 +21,10 @@ import com.ae.tech.ProcessMenu.entity.dto.AuthenticationDTO;
 import com.ae.tech.ProcessMenu.entity.dto.LoginResponseDTO;
 import com.ae.tech.ProcessMenu.entity.dto.RegisterDTO;
 import com.ae.tech.ProcessMenu.entity.dto.UserDTO;
-import com.ae.tech.ProcessMenu.entity.users.AddressUser;
 import com.ae.tech.ProcessMenu.entity.users.User;
-import com.ae.tech.ProcessMenu.entity.users.UserRole;
-import com.ae.tech.ProcessMenu.infra.security.TokenService;
-import com.ae.tech.ProcessMenu.repositorio.AddressUserRepository;
 import com.ae.tech.ProcessMenu.repositorio.UserRepository;
 import com.ae.tech.ProcessMenu.services.MailSenderService;
-import com.ae.tech.ProcessMenu.services.RandomService;
+import com.ae.tech.ProcessMenu.services.TokenService;
 import com.ae.tech.ProcessMenu.services.UserService;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -69,7 +61,14 @@ public class AuthenticationController {
 			var user = ((User) auth.getPrincipal());
 			user.setToken(token);
 			this.userRepository.save(user);
-			return ResponseEntity.ok(new LoginResponseDTO(token, user.getId().toString()));
+			String role = "";
+			if (user.getRole().toString() == "SUPERADM")
+				role = "A";
+			else if (user.getRole().toString() == "USER")
+				role = "U";
+			else
+				role = "F";
+			return ResponseEntity.ok(new LoginResponseDTO(token, user.getId().toString(), role));
 		} catch (Exception e) {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 		}
