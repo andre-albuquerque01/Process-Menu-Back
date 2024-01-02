@@ -26,10 +26,12 @@ public class OrderService {
 		if (!orderRepository.findByNumberOrder(numberOrder).isEmpty() || !idUser.isPresent())
 			throw new Exception("Erro na geração do número ou usuário não listado");
 
+		if(data.formPay() != null && data.precoTotal() > 0) {			
 		Order _order = new Order(data.products(), numberOrder, data.idUser(), data.formPay(), data.qtdItens(),
 				data.table(), data.precoTotal(), "Aberto", data.impostoTributos(), data.nfe(), data.tip(),
 				data.create_at(), data.update_at());
 		Order saveorder = this.orderRepository.save(_order);
+		}
 	}
 
 	public Order updateOrder(String id, Order data) throws Exception {

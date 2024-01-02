@@ -125,10 +125,12 @@ public class OrderController {
 		try {
 			Optional<Order> orderData = orderRepository.findById(id);
 			if (orderData.isPresent()) {
+				System.out.println("Entrou na etapa");
 				Order _order = orderData.get();
 				_order.setStatus(data.stats());
 				_order.setUpdate_at(data.update_at());
-				return new ResponseEntity<>(orderRepository.save(_order), HttpStatus.OK);
+				_order = orderRepository.save(_order);
+				return new ResponseEntity<>(null, HttpStatus.OK);
 			}
 			return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
 		} catch (Exception e) {
